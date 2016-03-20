@@ -1,3 +1,3 @@
-every 1.day, :at => '6:00 am' do
-  rake "ttc:crawl"
+every 1.day, :at => '2:15 am' do
+  rake "ttc:fetch"
 end
