@@ -1,0 +1,19 @@
+{
+  "uuid": "9da6e6ff-182e-4a1f-ade5-914b53aec7aa",
+  "shortName": "pebble-ttc",
+  "longName": "pebble-ttc",
+  "companyName": "MakeAwesomeHappen",
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt", "chalk"],
+  "enableMultiJS": true,
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
