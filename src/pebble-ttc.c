@@ -10,8 +10,7 @@ enum {
   KEY_MENU_SECTION_TITLE,
   KEY_MENU_ITEM_TITLE,
   KEY_MENU_ITEM_SUBTITLE,
-  KEY_MENU_SHOW,
-  KEY_MENU_ACK
+  KEY_MENU_SHOW
 };
 
 // Dynamically allocated menu data structures
@@ -89,12 +88,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
     }
     tuple = dict_read_next(iterator);
   }
-
-  // Tell phone we're ready for the next message
-  DictionaryIterator *iter;
-  app_message_outbox_begin(&iter);
-  dict_write_uint8(iter, KEY_MENU_ACK, 12);
-  app_message_outbox_send();
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {

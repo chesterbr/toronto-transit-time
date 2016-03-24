@@ -6,18 +6,9 @@ Pebble.addEventListener("ready",
   }
 );
 
-
 // Asynchronous Message Queue
 
 var g_menu_messages = [];
-
-Pebble.addEventListener('appmessage',
-  function(e) {
-    if ('KEY_MENU_ACK' in e.payload) {
-      send_queued_msgs();
-    }
-  }
-);
 
 function enqueue_msg(dict) {
   g_menu_messages.push(dict);
@@ -27,7 +18,7 @@ function send_queued_msgs() {
   var dict = g_menu_messages.shift();
   if (dict) {
     Pebble.sendAppMessage(dict, function(e) {
-      // console.log('Sent to pebble: ' + JSON.stringify(e.data));
+      send_queued_msgs();
     }, function(e) {
       console.log('Error sending weather info to Pebble!' + JSON.stringify(e));
     });

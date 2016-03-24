@@ -24,7 +24,6 @@
     "KEY_MENU_SECTION_TITLE": 3,
     "KEY_MENU_ITEM_TITLE": 4,
     "KEY_MENU_ITEM_SUBTITLE": 5,
-    "KEY_MENU_SHOW": 6,
-    "KEY_MENU_ACK": 7
+    "KEY_MENU_SHOW": 6
   }
 }
