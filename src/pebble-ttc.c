@@ -3,124 +3,142 @@
 static Window *s_main_window;
 static SimpleMenuLayer *s_simple_menu_layer;
 
-#define NUM_MENU_SECTIONS 2
-#define NUM_FIRST_MENU_ITEMS 2
-#define NUM_SECOND_MENU_ITEMS 4
+enum {
+  KEY_MENU_SECTION_COUNT = 0,
+  KEY_MENU_STRING_BUFFER_SIZE,
+  KEY_MENU_SECTION_ITEMS_COUNT,
+  KEY_MENU_SECTION_TITLE,
+  KEY_MENU_ITEM_TITLE,
+  KEY_MENU_ITEM_SUBTITLE,
+  KEY_MENU_SHOW,
+  KEY_MENU_ACK
+};
 
-static SimpleMenuSection s_menu_sections[NUM_MENU_SECTIONS];
-static SimpleMenuItem s_first_menu_items[NUM_FIRST_MENU_ITEMS];
-static SimpleMenuItem s_second_menu_items[NUM_SECOND_MENU_ITEMS];
-// static GBitmap *s_menu_icon_image;
+// Dynamically allocated menu data structures
+static int s_menu_sections_count;
+static SimpleMenuSection *s_menu_sections;
+static char *s_menu_string_buffer;
 
-static bool s_special_flag = false;
-static int s_hit_count = 0;
-
-static void menu_select_callback(int index, void *ctx) {
-  s_first_menu_items[index].subtitle = "You've hit select here!";
-  layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
-}
-
-static void special_select_callback(int index, void *ctx) {
-  // Of course, you can do more complicated things in a menu item select callback
-  // Here, we have a simple toggle
-  s_special_flag = !s_special_flag;
-
-  SimpleMenuItem *menu_item = &s_second_menu_items[index];
-
-  if (s_special_flag) {
-    menu_item->subtitle = "Okay, it's not so special.";
-  } else {
-    menu_item->subtitle = "Well, maybe a little.";
-  }
-
-  if (++s_hit_count > 5) {
-    menu_item->title = "Very Special Item";
-  }
-
-  layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
-}
-
+// Counters and pointers used during menu population
+static char *s_menu_string_buffer_pos;
+static int s_menu_current_section_index;
+static int s_menu_current_item_index;
+static char* s_menu_current_item_title;
+static SimpleMenuItem *s_menu_current_section_items;
 
 static void main_window_load(Window *window) {
-  // s_menu_icon_image = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_MENU_ICON_1);
 
-  // Although we already defined NUM_FIRST_MENU_ITEMS, you can define
-  // an int as such to easily change the order of menu items later
-  int num_a_items = 0;
-
-  s_first_menu_items[num_a_items++] = (SimpleMenuItem) {
-    .title = "509-Harbourfront",
-    .subtitle = "West - 509/511 Replacement Bus towards Lake Shore and Bathurst",
-    .callback = menu_select_callback,
-  };
-  s_first_menu_items[num_a_items++] = (SimpleMenuItem) {
-    .title = "511-Bathrust",
-    .subtitle = "North - 511 Bathurst towards Bathurst Station",
-    // ,
-    // .subtitle = "Here's a subtitle",
-    .callback = menu_select_callback,
-  };
-  // s_first_menu_items[num_a_items++] = (SimpleMenuItem) {
-  //   .title = "Third Item",
-  //   .subtitle = "This has an icon",
-  //   .callback = menu_select_callback //,
-  //   // .icon = s_menu_icon_image,
-  // };
-
-  s_second_menu_items[0] = (SimpleMenuItem) {
-    .title = "Eastbound on King at Spadina",
-    .callback = special_select_callback,
-  };
-
-  s_second_menu_items[1] = (SimpleMenuItem) {
-    .title = "Northbound on Spadina at King Farside",
-    .callback = special_select_callback,
-  };
-
-  s_second_menu_items[2] = (SimpleMenuItem) {
-    .title = "Southbound on Spadina at King",
-    .callback = special_select_callback,
-  };
-
-  s_second_menu_items[3] = (SimpleMenuItem) {
-    .title = "Westbound on King at Spadina",
-    .callback = special_select_callback,
-  };
-
-
-  s_menu_sections[0] = (SimpleMenuSection) {
-    .title = "Fleet St At Bastion St",
-    .num_items = NUM_FIRST_MENU_ITEMS,
-    .items = s_first_menu_items,
-  };
-  s_menu_sections[1] = (SimpleMenuSection) {
-    .title = "King and Spadina",
-    .num_items = NUM_SECOND_MENU_ITEMS,
-    .items = s_second_menu_items,
-  };
-
-  Layer *window_layer = window_get_root_layer(window);
-  GRect bounds = layer_get_frame(window_layer);
-
-  s_simple_menu_layer = simple_menu_layer_create(bounds, window, s_menu_sections, NUM_MENU_SECTIONS, NULL);
-
-  layer_add_child(window_layer, simple_menu_layer_get_layer(s_simple_menu_layer));
 }
 
 static void main_window_unload(Window *window) {
-  simple_menu_layer_destroy(s_simple_menu_layer);
+
 }
 
+
+static char* save_string_in_buffer(char* s) {
+  char* stored_string = strcpy(s_menu_string_buffer_pos, s);
+  s_menu_string_buffer_pos += strlen(s) + 1;
+
+  return stored_string;
+}
+
+// Communication with phone
+
+static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
+  Tuple *tuple = dict_read_first(iterator);
+  while (tuple) {
+    switch (tuple->key) {
+      case KEY_MENU_SECTION_COUNT:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Building Menu");
+        s_menu_sections_count = (int)tuple->value->int32;
+        s_menu_sections = (SimpleMenuSection *)malloc(s_menu_sections_count * sizeof(SimpleMenuSection));
+        s_menu_current_section_index = -1;
+        break;
+      case KEY_MENU_STRING_BUFFER_SIZE:
+        s_menu_string_buffer = (char *)malloc((int)tuple->value->int32 * sizeof(char));
+        s_menu_string_buffer_pos = s_menu_string_buffer;
+        break;
+      case KEY_MENU_SECTION_ITEMS_COUNT:
+        s_menu_current_section_items = (SimpleMenuItem *)malloc((int)tuple->value->int32 * sizeof(SimpleMenuItem));
+        s_menu_sections[++s_menu_current_section_index] = (SimpleMenuSection) {
+          .num_items = (int)tuple->value->int32,
+          .items = s_menu_current_section_items,
+        };
+        s_menu_current_item_index = 0;
+        break;
+      case KEY_MENU_SECTION_TITLE:
+        s_menu_sections[s_menu_current_section_index].title = save_string_in_buffer(tuple->value->cstring);
+        break;
+      case KEY_MENU_ITEM_TITLE:
+        s_menu_current_item_title = save_string_in_buffer(tuple->value->cstring);
+        break;
+      case KEY_MENU_ITEM_SUBTITLE:
+        s_menu_current_section_items[s_menu_current_item_index] = (SimpleMenuItem) {
+          .title = s_menu_current_item_title,
+          .subtitle = save_string_in_buffer(tuple->value->cstring)
+        };
+        s_menu_current_item_index++;
+        break;
+      case KEY_MENU_SHOW:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "Showing Menu");
+        Layer *window_layer = window_get_root_layer(s_main_window);
+        GRect bounds = layer_get_frame(window_layer);
+        s_simple_menu_layer = simple_menu_layer_create(bounds, s_main_window, s_menu_sections, s_menu_current_section_index + 1, NULL);
+        layer_add_child(window_layer, simple_menu_layer_get_layer(s_simple_menu_layer));
+        break;
+    }
+    tuple = dict_read_next(iterator);
+  }
+
+  // Tell phone we're ready for the next message
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+  dict_write_uint8(iter, KEY_MENU_ACK, 12);
+  app_message_outbox_send();
+}
+
+static void inbox_dropped_callback(AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
+}
+
+static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "Outbox send failed!");
+}
+
+void menu_destroy() {
+  simple_menu_layer_destroy(s_simple_menu_layer);
+  for (int i = 0; i < s_menu_sections_count; i++) {
+    free((void *)s_menu_sections[i].items);
+  }
+  free(s_menu_sections);
+  free(s_menu_string_buffer);
+
+}
+
+void initialize_communication_with_phone() {
+  app_message_register_inbox_received(inbox_received_callback);
+  app_message_register_inbox_dropped(inbox_dropped_callback);
+  app_message_register_outbox_failed(outbox_failed_callback);
+
+  const int inbox_size = 1024;
+  const int outbox_size = 1024;
+  app_message_open(inbox_size, outbox_size);
+}
+
+
 void init() {
+  initialize_communication_with_phone();
+
   s_main_window = window_create();
-  window_set_window_handlers(s_main_window, (WindowHandlers) {
-    .load = main_window_load,
-    .unload = main_window_unload,
-  });
+  // window_set_window_handlers(s_main_window, (WindowHandlers) {
+  //   .load = main_window_load,
+  //   .unload = main_window_unload,
+  // });
   window_stack_push(s_main_window, true);
 }
 
 void deinit() {
+  menu_destroy();
   window_destroy(s_main_window);
 }
 

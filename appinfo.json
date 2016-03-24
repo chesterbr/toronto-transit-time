@@ -15,5 +15,16 @@
   },
   "resources": {
     "media": []
+  },
+  "capabilities": ["location"],
+  "appKeys": {
+    "KEY_MENU_SECTION_COUNT": 0,
+    "KEY_MENU_STRING_BUFFER_SIZE": 1,
+    "KEY_MENU_SECTION_ITEMS_COUNT": 2,
+    "KEY_MENU_SECTION_TITLE": 3,
+    "KEY_MENU_ITEM_TITLE": 4,
+    "KEY_MENU_ITEM_SUBTITLE": 5,
+    "KEY_MENU_SHOW": 6,
+    "KEY_MENU_ACK": 7
   }
 }
