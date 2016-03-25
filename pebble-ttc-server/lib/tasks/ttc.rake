@@ -4,10 +4,11 @@ namespace :ttc do
 
   desc 'Crawls the TTC site from official API (http://goo.gl/rb2151)'
   task crawl: :environment do
+    puts "[#{Time.now}] Clearing database (just in case - rake db:reset should run before this)"
     wipe_database
 
     fetch_all_routes_hash.each do |route|
-      puts "Importing #{route['title']}..."
+      puts "[#{Time.now}] Importing #{route['title']}..."
       hash = fetch_route_hash(route)
 
       create_route(hash)
@@ -18,7 +19,7 @@ namespace :ttc do
       throttle
     end
 
-    puts "Done. #{Route.count} routes, #{Direction.count} directions and #{Stop.count} stops imported."
+    puts "[#{Time.now}] Done. #{Route.count} routes, #{Direction.count} directions and #{Stop.count} stops imported."
   end
 
   private
@@ -57,8 +58,6 @@ namespace :ttc do
     parts = route.title.partition('-')
     alternative_id_reduce_regexp = /\b(#{parts[0]}.*) #{parts[2]} towards /
 
-    puts route.title
-    puts directions_hash
     directions_hash.each do |d|
       d['title'] = d['title']
         .sub(name_dedup_regexp, '')
@@ -67,8 +66,6 @@ namespace :ttc do
         .sub(' - ',':')
         .sub(/\btowards\b/, '=>')
     end
-    puts "--"
-    puts directions_hash
 
     route.directions.create!(directions_hash)
   end
