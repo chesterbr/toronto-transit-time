@@ -8,22 +8,21 @@ class MenusController < ApplicationController
         .where(lat: lat_range, lon: lon_range)
         .joins(directions: :route)
         .order(distance_criteria(lat,lon))
-        .select('stops.title      section,  ' \
-                'routes.title     title,    ' \
-                'directions.title subtitle, ' \
+        .select('stops.title      stop,     ' \
+                'routes.title     route,    ' \
+                'directions.title direction,' \
                 'routes.tag       r,        ' \
                 'stops.tag        s         ')
-        .group_by(&:section)
-
-    stops_and_routes.each do |section, routes|
-      routes.map! do |route|
-        {
-          title: route.title,
-          subtitle: route.subtitle,
-          uri: predictions_uri(route)
-        }
-      end
-    end
+        .group_by(&:stop)
+        .to_a.map do |stop|
+          {
+            stop: stop[0],
+            routes: stop[1].map { |route| route
+                .slice(*%w(route direction))
+                .merge({uri: predictions_uri(route)})
+            }
+          }
+        end
 
     render json: stops_and_routes.to_json
   end
