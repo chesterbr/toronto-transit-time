@@ -52,12 +52,35 @@ namespace :ttc do
     route = Route.find_by(hash.slice('tag'))
     directions_hash = hash['direction'].map { |d| d.slice(*%w(tag title)) }
 
+    name_dedup_regexp = /\b#{route.title.gsub('-','.')} towards /
+
+    parts = route.title.partition('-')
+    alternative_id_reduce_regexp = /\b(#{parts[0]}.*) #{parts[2]} towards /
+
+    puts route.title
+    puts directions_hash
+    directions_hash.each do |d|
+      d['title'] = d['title']
+        .sub(name_dedup_regexp, '')
+        .sub(alternative_id_reduce_regexp) { "(#{$1}) " }
+        .sub(/\bNorth\b/,'N').sub(/\bSouth\b/,'S').sub(/\bEast\b/,'E').sub(/\bWest\b/,'W')
+        .sub(' - ',':')
+        .sub(/\btowards\b/, '=>')
+    end
+    puts "--"
+    puts directions_hash
+
     route.directions.create!(directions_hash)
   end
 
   def create_stops(hash)
     hash['stop'].each do |s|
       s.slice!(*%w(tag title lat lon))
+      s['title'] = s['title']
+        .gsub(/\b(St|Ave|Rd)\b/,'').gsub('  ',' ')
+        .gsub(/\bAt\b/,'@')
+        .gsub(/\bNorth\b/,'N').gsub(/\bSouth\b/,'S').gsub(/\bEast\b/,'E').gsub(/\bWest\b/,'W')
+        .gsub(/\bPearson Airport\b/,'Pearson')
 
       Stop.create_with(s)
           .find_or_create_by!(s.slice('tag'))
