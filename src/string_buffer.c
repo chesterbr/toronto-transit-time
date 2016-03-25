@@ -12,6 +12,10 @@ char* string_buffer_init(int size) {
   );
 }
 
+void string_buffer_deinit() {
+  free(s_menu_string_buffer);
+}
+
 char* string_buffer_store(char* s) {
   char* stored_string = strcpy(s_menu_string_buffer_pos, s);
   s_menu_string_buffer_pos += strlen(s) + 1;
@@ -19,6 +23,3 @@ char* string_buffer_store(char* s) {
   return stored_string;
 }
 
-void string_buffer_deinit() {
-  free(s_menu_string_buffer);
-}
