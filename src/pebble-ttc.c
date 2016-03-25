@@ -18,7 +18,6 @@ void app_deinit() {
   routes_list_deinit();
 }
 
-
 void initialize_communication_with_phone() {
   app_message_register_inbox_received(inbox_received_callback);
   app_message_register_inbox_dropped(inbox_dropped_callback);
