@@ -69,8 +69,8 @@ function locationSuccess(pos) {
         enqueue_msg({ 'KEY_MENU_SECTION_ITEMS_COUNT' : items.length });
         enqueue_msg({ 'KEY_MENU_SECTION_TITLE' : section_title });
         items.forEach(function(item) {
-          enqueue_msg({ 'KEY_MENU_ITEM_TITLE' : item.title });
-          enqueue_msg({ 'KEY_MENU_ITEM_SUBTITLE' : item.subtitle });
+          enqueue_msg({ 'KEY_MENU_ITEM_TITLE' : item.title,
+                        'KEY_MENU_ITEM_SUBTITLE' : item.subtitle });
           // TODO store URL
         });
       }
