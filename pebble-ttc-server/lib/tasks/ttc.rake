@@ -66,6 +66,7 @@ namespace :ttc do
         .sub(' - ',':')
         .sub(/\btowards\b/, '=>')
         .sub(/\bStation\b/, 'Sta')
+        .strip
     end
 
     route.directions.create!(directions_hash)
@@ -79,6 +80,7 @@ namespace :ttc do
         .gsub(/\bAt\b/,'@')
         .gsub(/\bNorth\b/,'N').gsub(/\bSouth\b/,'S').gsub(/\bEast\b/,'E').gsub(/\bWest\b/,'W')
         .gsub(/\bPearson Airport\b/,'Pearson')
+        .strip
 
       Stop.create_with(s)
           .find_or_create_by!(s.slice('tag'))
