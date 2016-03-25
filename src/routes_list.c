@@ -2,6 +2,11 @@
 #include <pebble.h>
 #include "string_buffer.h"
 
+static void initialize_sessions_array(int section_count);
+static void initialize_current_session(int items_count);
+static void save_current_section_title(char * title);
+static void save_current_item_title(char* title);
+static void save_current_item_subtitle(char* subtitle);
 static void show_list();
 
 static Window *s_routes_list_window;
@@ -35,9 +40,6 @@ enum {
   KEY_MENU_ITEM_SUBTITLE_10    = 130
 };
 
-const int MIN_KEY = 0;
-const int MAX_KEY = 30;
-
 // Dynamically allocated menu data structures
 static int s_menu_sections_count;
 static SimpleMenuSection *s_menu_sections;
@@ -63,23 +65,16 @@ void routes_list_inbox_received(DictionaryIterator *iterator, void *context) {
     }
     switch (tuple->key) {
       case KEY_MENU_SECTION_COUNT:
-        s_menu_sections_count = (int)tuple->value->int32;
-        s_menu_sections = (SimpleMenuSection *)malloc(s_menu_sections_count * sizeof(SimpleMenuSection));
-        s_menu_current_section_index = -1;
+        initialize_sessions_array((int)tuple->value->int32);
         break;
       case KEY_MENU_STRING_BUFFER_SIZE:
         string_buffer_init((int)tuple->value->int32);
         break;
       case KEY_MENU_SECTION_ITEMS_COUNT:
-        s_menu_current_section_items = (SimpleMenuItem *)malloc((int)tuple->value->int32 * sizeof(SimpleMenuItem));
-        s_menu_sections[++s_menu_current_section_index] = (SimpleMenuSection) {
-          .num_items = (int)tuple->value->int32,
-          .items = s_menu_current_section_items,
-        };
-        s_menu_current_item_index = 0;
+        initialize_current_session((int)tuple->value->int32);
         break;
       case KEY_MENU_SECTION_TITLE:
-        s_menu_sections[s_menu_current_section_index].title = string_buffer_store(tuple->value->cstring);
+        save_current_section_title(tuple->value->cstring);
         break;
       case KEY_MENU_ITEM_TITLE_1:
       case KEY_MENU_ITEM_TITLE_2:
@@ -91,7 +86,7 @@ void routes_list_inbox_received(DictionaryIterator *iterator, void *context) {
       case KEY_MENU_ITEM_TITLE_8:
       case KEY_MENU_ITEM_TITLE_9:
       case KEY_MENU_ITEM_TITLE_10:
-        s_menu_current_item_title = string_buffer_store(tuple->value->cstring);
+        save_current_item_title(tuple->value->cstring);
         break;
       case KEY_MENU_ITEM_SUBTITLE_1:
       case KEY_MENU_ITEM_SUBTITLE_2:
@@ -103,11 +98,7 @@ void routes_list_inbox_received(DictionaryIterator *iterator, void *context) {
       case KEY_MENU_ITEM_SUBTITLE_8:
       case KEY_MENU_ITEM_SUBTITLE_9:
       case KEY_MENU_ITEM_SUBTITLE_10:
-        s_menu_current_section_items[s_menu_current_item_index] = (SimpleMenuItem) {
-          .title = s_menu_current_item_title,
-          .subtitle = string_buffer_store(tuple->value->cstring)
-        };
-        s_menu_current_item_index++;
+        save_current_item_subtitle(tuple->value->cstring);
         break;
       case KEY_MENU_SHOW:
         show_list();
@@ -128,6 +119,37 @@ void routes_list_deinit() {
 }
 
 // Private
+
+static void initialize_sessions_array(int section_count) {
+  s_menu_sections_count = section_count;
+  s_menu_sections = (SimpleMenuSection *)malloc(s_menu_sections_count * sizeof(SimpleMenuSection));
+  s_menu_current_section_index = -1;
+}
+
+static void initialize_current_session(int items_count) {
+  s_menu_current_section_items = (SimpleMenuItem *)malloc(items_count * sizeof(SimpleMenuItem));
+  s_menu_sections[++s_menu_current_section_index] = (SimpleMenuSection) {
+    .num_items = items_count,
+    .items = s_menu_current_section_items,
+  };
+  s_menu_current_item_index = 0;
+}
+
+static void save_current_section_title(char * title) {
+  s_menu_sections[s_menu_current_section_index].title = string_buffer_store(title);
+}
+
+static void save_current_item_title(char* title) {
+  s_menu_current_item_title = string_buffer_store(title);
+}
+
+static void save_current_item_subtitle(char* subtitle) {
+  s_menu_current_section_items[s_menu_current_item_index] = (SimpleMenuItem) {
+    .title = s_menu_current_item_title,
+    .subtitle = string_buffer_store(subtitle)
+  };
+  s_menu_current_item_index++;
+}
 
 static void show_list() {
   Layer *window_layer = window_get_root_layer(s_routes_list_window);
