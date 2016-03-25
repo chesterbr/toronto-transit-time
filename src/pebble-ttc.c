@@ -1,6 +1,7 @@
-#include <pebble.h>
+#include <pebble-ttc.h>
+#include "string_buffer.h"
 
-static Window *s_main_window;
+static Window *s_routes_list_window;
 static SimpleMenuLayer *s_simple_menu_layer;
 
 enum {
@@ -37,30 +38,16 @@ int MAX_KEY = 30;
 // Dynamically allocated menu data structures
 static int s_menu_sections_count;
 static SimpleMenuSection *s_menu_sections;
-static char *s_menu_string_buffer;
 
 // Counters and pointers used during menu population
-static char *s_menu_string_buffer_pos;
 static int s_menu_current_section_index;
 static int s_menu_current_item_index;
 static char* s_menu_current_item_title;
 static SimpleMenuItem *s_menu_current_section_items;
 
-static void main_window_load(Window *window) {
-
-}
-
-static void main_window_unload(Window *window) {
-
-}
 
 
-static char* save_string_in_buffer(char* s) {
-  char* stored_string = strcpy(s_menu_string_buffer_pos, s);
-  s_menu_string_buffer_pos += strlen(s) + 1;
 
-  return stored_string;
-}
 
 // Communication with phone
 
@@ -78,8 +65,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         s_menu_current_section_index = -1;
         break;
       case KEY_MENU_STRING_BUFFER_SIZE:
-        s_menu_string_buffer = (char *)malloc((int)tuple->value->int32 * sizeof(char));
-        s_menu_string_buffer_pos = s_menu_string_buffer;
+        string_buffer_init((int)tuple->value->int32);
         break;
       case KEY_MENU_SECTION_ITEMS_COUNT:
         s_menu_current_section_items = (SimpleMenuItem *)malloc((int)tuple->value->int32 * sizeof(SimpleMenuItem));
@@ -90,7 +76,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         s_menu_current_item_index = 0;
         break;
       case KEY_MENU_SECTION_TITLE:
-        s_menu_sections[s_menu_current_section_index].title = save_string_in_buffer(tuple->value->cstring);
+        s_menu_sections[s_menu_current_section_index].title = string_buffer_store(tuple->value->cstring);
         break;
       case KEY_MENU_ITEM_TITLE_1:
       case KEY_MENU_ITEM_TITLE_2:
@@ -102,7 +88,7 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       case KEY_MENU_ITEM_TITLE_8:
       case KEY_MENU_ITEM_TITLE_9:
       case KEY_MENU_ITEM_TITLE_10:
-        s_menu_current_item_title = save_string_in_buffer(tuple->value->cstring);
+        s_menu_current_item_title = string_buffer_store(tuple->value->cstring);
         break;
       case KEY_MENU_ITEM_SUBTITLE_1:
       case KEY_MENU_ITEM_SUBTITLE_2:
@@ -116,15 +102,15 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       case KEY_MENU_ITEM_SUBTITLE_10:
         s_menu_current_section_items[s_menu_current_item_index] = (SimpleMenuItem) {
           .title = s_menu_current_item_title,
-          .subtitle = save_string_in_buffer(tuple->value->cstring)
+          .subtitle = string_buffer_store(tuple->value->cstring)
         };
         s_menu_current_item_index++;
         break;
       case KEY_MENU_SHOW:
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Showing Menu");
-        Layer *window_layer = window_get_root_layer(s_main_window);
+        Layer *window_layer = window_get_root_layer(s_routes_list_window);
         GRect bounds = layer_get_frame(window_layer);
-        s_simple_menu_layer = simple_menu_layer_create(bounds, s_main_window, s_menu_sections, s_menu_current_section_index + 1, NULL);
+        s_simple_menu_layer = simple_menu_layer_create(bounds, s_routes_list_window, s_menu_sections, s_menu_current_section_index + 1, NULL);
         layer_add_child(window_layer, simple_menu_layer_get_layer(s_simple_menu_layer));
         break;
     }
@@ -145,8 +131,22 @@ void menu_destroy() {
     free((void *)s_menu_sections[i].items);
   }
   free(s_menu_sections);
-  free(s_menu_string_buffer);
+  string_buffer_deinit();
+}
 
+int main(void) {
+  app_init();
+  app_event_loop();
+  app_deinit();
+
+  return 0;
+}
+
+void app_init() {
+  initialize_communication_with_phone();
+
+  s_routes_list_window = window_create();
+  window_stack_push(s_routes_list_window, true);
 }
 
 void initialize_communication_with_phone() {
@@ -159,27 +159,7 @@ void initialize_communication_with_phone() {
   app_message_open(inbox_size, outbox_size);
 }
 
-
-void init() {
-  initialize_communication_with_phone();
-
-  s_main_window = window_create();
-  // window_set_window_handlers(s_main_window, (WindowHandlers) {
-  //   .load = main_window_load,
-  //   .unload = main_window_unload,
-  // });
-  window_stack_push(s_main_window, true);
-}
-
-void deinit() {
+void app_deinit() {
   menu_destroy();
-  window_destroy(s_main_window);
-}
-
-int main(void) {
-  init();
-  app_event_loop();
-  deinit();
-
-  return 0;
+  window_destroy(s_routes_list_window);
 }
