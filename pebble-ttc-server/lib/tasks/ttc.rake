@@ -65,6 +65,7 @@ namespace :ttc do
         .sub(/\bNorth\b/,'N').sub(/\bSouth\b/,'S').sub(/\bEast\b/,'E').sub(/\bWest\b/,'W')
         .sub(' - ',':')
         .sub(/\btowards\b/, '=>')
+        .sub(/\bStation\b/, 'Sta')
     end
 
     route.directions.create!(directions_hash)
