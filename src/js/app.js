@@ -1,36 +1,14 @@
-var ITEMS_PER_MESSAGE = 10;
 
-// Communications initialization
+// External APIs
 
-Pebble.addEventListener("ready",
-  function(e) {
-    console.log('JS Ready!');
-  }
-);
-
-// Asynchronous Message Queue
-
-var g_menu_messages = [];
-
-function enqueue_msg(dict) {
-  g_menu_messages.push(dict);
+function api_get_routes_for_location(lat, lon, callback) {
+  var url = 'http://pebblettc.chester.me/menu' +
+              '?lat=' + lat +
+              '&lon=' + lon;
+  xhrRequest(url, 'GET', callback);
 }
 
-function send_queued_msgs() {
-  var dict = g_menu_messages.shift();
-  if (dict) {
-    Pebble.sendAppMessage(dict, function(e) {
-      send_queued_msgs();
-    }, function(e) {
-      console.log('Error sending weather info to Pebble!' + JSON.stringify(e));
-    });
-  }
-}
-
-// Location
-
-// Helper for http requests
-var xhrRequest = function (url, type, callback) {
+function xhrRequest(url, type, callback) {
   var xhr = new XMLHttpRequest();
   xhr.onload = function () {
     callback(this.responseText);
@@ -39,63 +17,97 @@ var xhrRequest = function (url, type, callback) {
   xhr.send();
 };
 
+// Asynchronous Message Queue
 
-function locationSuccess(pos) {
-  console.log("got location");
-  var url = 'http://pebblettc.chester.me/menu' +
-    '?lat=' + pos.coords.latitude +
-    '&lon=' + pos.coords.longitude;
+var message_queue = [];
+var current_message;
+var current_item_ord;
 
-  xhrRequest(url, 'GET',
-    function(responseText) {
-      var json = JSON.parse(responseText);
+var MAX_ITEMS_PER_MESSAGE = 10;
 
-      var string_buffer_size = 0;
-      for (var section_title in json) {
-        items = json[section_title];
-        string_buffer_size += section_title.length + 1;
-        items.forEach(function(item) {
-          string_buffer_size += item.title.length + 1;
-          string_buffer_size += item.subtitle.length + 1;
-        });
-      }
+function enqueue_messages(stops) {
+  new_message();
+  append_to_message('section_count', stops.length);
+  append_to_message('string_buffer_size', stringBufferSize(stops));
 
+  stops.forEach(function(stop) {
+    new_message();
+    routes = stop['routes'];
+    append_to_message('section_items_count', routes.length);
+    append_to_message('section_title', stop['stop']);
+    routes.forEach(function(route) {
+      append_to_message('item_title', route['route']);
+      append_to_message('item_subtitle', route['direction']);
+      // TODO store URL for subsequent call requests from Pebble
+    });
+  });
 
-      enqueue_msg({
-        'KEY_MENU_SECTION_COUNT': Object.keys(json).length,
-        'KEY_MENU_STRING_BUFFER_SIZE' : string_buffer_size
-      });
-
-      for (var section_title in json) {
-        items = json[section_title];
-        var bulk_message = {
-          'KEY_MENU_SECTION_ITEMS_COUNT' : items.length,
-          'KEY_MENU_SECTION_TITLE' : section_title
-        }
-        for(var i = 0; i < items.length; i++) {
-          n = (i % ITEMS_PER_MESSAGE) + 1;
-          bulk_message['KEY_MENU_ITEM_TITLE_' + n] = items[i].title;
-          bulk_message['KEY_MENU_ITEM_SUBTITLE_' + n] = items[i].subtitle;
-          if (n == ITEMS_PER_MESSAGE || i == items.length - 1) {
-            enqueue_msg(bulk_message);
-            bulk_message = {};
-          }
-          // TODO store URL
-        }
-      }
-
-      enqueue_msg({ 'KEY_MENU_SHOW' : 0 })
-
-      send_queued_msgs();
-    }
-  );
+  append_to_message('show', 0);
 }
 
-
-
-function locationError(err) {
-  console.log('Error requesting location!');
+function dispatch_messages() {
+  enqueue_current_message_if_any();
+  dispatch_until_queue_is_empty();
 }
+
+function dispatch_until_queue_is_empty() {
+  var dict = message_queue.shift();
+  if (dict) {
+    console.log(JSON.stringify(dict));
+    Pebble.sendAppMessage(dict, function(e) {
+      dispatch_until_queue_is_empty();
+    }, function(e) {
+      console.log('Error sending message to Pebble!' + JSON.stringify(e));
+    });
+  }
+}
+
+function new_message() {
+  enqueue_current_message_if_any();
+  current_message = {}
+  current_item_ord = 1;
+}
+
+function append_to_message(type, value) {
+  var key = 'KEY_MENU_' + type.toUpperCase();
+  if (type == 'item_title') {
+    key += '_' + current_item_ord;
+  } else if (type == 'item_subtitle') {
+    key += '_' + current_item_ord++;
+  }
+  current_message[key] = value;
+
+  if (current_item_ord > MAX_ITEMS_PER_MESSAGE) {
+    new_message();
+  }
+}
+
+function enqueue_current_message_if_any() {
+  if (current_message && Object.keys(current_message).length > 0) {
+    message_queue.push(current_message);
+  }
+}
+
+function stringBufferSize(stops) {
+  var size = 0;
+  stops.forEach(function(stop) {
+    routes = stop['routes'];
+    size += stop['stop'].length + 1;
+    routes.forEach(function(route) {
+      size += route['route'].length + 1;
+      size += route['direction'].length + 1;
+    });
+  });
+  return size;
+}
+
+// Trigger location, api, dispatch
+
+Pebble.addEventListener('ready',
+  function(e) {
+    getMenu();
+  }
+);
 
 function getMenu() {
   console.log("getting position");
@@ -106,13 +118,18 @@ function getMenu() {
   );
 }
 
-// Listen for when the watchface is opened
-Pebble.addEventListener('ready',
-  function(e) {
-    console.log('PebbleKit JS ready!');
+function locationSuccess(pos) {
+  console.log("got location");
 
-    // Get the initial menu
-    getMenu();
-  }
-);
+  api_get_routes_for_location(pos.coords.latitude, pos.coords.longitude,
+    function(response) {
+      enqueue_messages(JSON.parse(response));
+      dispatch_messages();
+    }
+  );
+}
+
+function locationError(err) {
+  console.log('Error requesting location!');
+}
 

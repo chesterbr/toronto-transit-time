@@ -15,27 +15,27 @@ enum {
   KEY_MENU_STRING_BUFFER_SIZE  = 101,
   KEY_MENU_SECTION_ITEMS_COUNT = 102,
   KEY_MENU_SECTION_TITLE       = 103,
-  KEY_MENU_SHOW                = 104,
-  KEY_MENU_ITEM_TITLE_1        = 111,
-  KEY_MENU_ITEM_TITLE_2        = 112,
-  KEY_MENU_ITEM_TITLE_3        = 113,
-  KEY_MENU_ITEM_TITLE_4        = 114,
-  KEY_MENU_ITEM_TITLE_5        = 115,
-  KEY_MENU_ITEM_TITLE_6        = 116,
-  KEY_MENU_ITEM_TITLE_7        = 117,
+  KEY_MENU_ITEM_TITLE_1        = 104,
+  KEY_MENU_ITEM_SUBTITLE_1     = 105,
+  KEY_MENU_ITEM_TITLE_2        = 106,
+  KEY_MENU_ITEM_SUBTITLE_2     = 107,
+  KEY_MENU_ITEM_TITLE_3        = 108,
+  KEY_MENU_ITEM_SUBTITLE_3     = 109,
+  KEY_MENU_ITEM_TITLE_4        = 110,
+  KEY_MENU_ITEM_SUBTITLE_4     = 111,
+  KEY_MENU_ITEM_TITLE_5        = 112,
+  KEY_MENU_ITEM_SUBTITLE_5     = 113,
+  KEY_MENU_ITEM_TITLE_6        = 114,
+  KEY_MENU_ITEM_SUBTITLE_6     = 115,
+  KEY_MENU_ITEM_TITLE_7        = 116,
+  KEY_MENU_ITEM_SUBTITLE_7     = 117,
   KEY_MENU_ITEM_TITLE_8        = 118,
-  KEY_MENU_ITEM_TITLE_9        = 119,
-  KEY_MENU_ITEM_TITLE_10       = 120,
-  KEY_MENU_ITEM_SUBTITLE_1     = 121,
-  KEY_MENU_ITEM_SUBTITLE_2     = 122,
-  KEY_MENU_ITEM_SUBTITLE_3     = 123,
-  KEY_MENU_ITEM_SUBTITLE_4     = 124,
-  KEY_MENU_ITEM_SUBTITLE_5     = 125,
-  KEY_MENU_ITEM_SUBTITLE_6     = 126,
-  KEY_MENU_ITEM_SUBTITLE_7     = 127,
-  KEY_MENU_ITEM_SUBTITLE_8     = 128,
-  KEY_MENU_ITEM_SUBTITLE_9     = 129,
-  KEY_MENU_ITEM_SUBTITLE_10    = 130
+  KEY_MENU_ITEM_SUBTITLE_8     = 119,
+  KEY_MENU_ITEM_TITLE_9        = 120,
+  KEY_MENU_ITEM_SUBTITLE_9     = 121,
+  KEY_MENU_ITEM_TITLE_10       = 122,
+  KEY_MENU_ITEM_SUBTITLE_10    = 123,
+  KEY_MENU_SHOW                = 124
 };
 
 static Window *s_routes_list_window;
@@ -67,7 +67,7 @@ void routes_list_deinit() {
 void routes_list_inbox_received(DictionaryIterator *iterator, void *context) {
   // To ensure all data structures are initialized before usage and to keep
   // track of the current section / item, keys must be processed in order
-  for(int key = KEY_MENU_SECTION_COUNT; key <= KEY_MENU_ITEM_SUBTITLE_10; key++) {
+  for(int key = KEY_MENU_SECTION_COUNT; key <= KEY_MENU_SHOW; key++) {
     Tuple *tuple = dict_find(iterator, key);
     if (tuple == NULL) {
       continue;
