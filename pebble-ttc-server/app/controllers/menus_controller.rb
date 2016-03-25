@@ -1,7 +1,7 @@
 class MenusController < ApplicationController
   def show
     lat, lon = params[:lat].to_f, params[:lon].to_f
-    lat_range, lon_range = square(lat, lon, 100)
+    lat_range, lon_range = square(lat, lon, 500)
 
     stops_and_routes =
       Stop
