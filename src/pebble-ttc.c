@@ -5,13 +5,34 @@ static SimpleMenuLayer *s_simple_menu_layer;
 
 enum {
   KEY_MENU_SECTION_COUNT = 0,
-  KEY_MENU_STRING_BUFFER_SIZE,
-  KEY_MENU_SECTION_ITEMS_COUNT,
-  KEY_MENU_SECTION_TITLE,
-  KEY_MENU_ITEM_TITLE,
-  KEY_MENU_ITEM_SUBTITLE,
-  KEY_MENU_SHOW
+  KEY_MENU_STRING_BUFFER_SIZE = 1,
+  KEY_MENU_SECTION_ITEMS_COUNT = 2,
+  KEY_MENU_SECTION_TITLE = 3,
+  KEY_MENU_SHOW = 4,
+  KEY_MENU_ITEM_TITLE_1 = 11,
+  KEY_MENU_ITEM_TITLE_2 = 12,
+  KEY_MENU_ITEM_TITLE_3 = 13,
+  KEY_MENU_ITEM_TITLE_4 = 14,
+  KEY_MENU_ITEM_TITLE_5 = 15,
+  KEY_MENU_ITEM_TITLE_6 = 16,
+  KEY_MENU_ITEM_TITLE_7 = 17,
+  KEY_MENU_ITEM_TITLE_8 = 18,
+  KEY_MENU_ITEM_TITLE_9 = 19,
+  KEY_MENU_ITEM_TITLE_10 = 20,
+  KEY_MENU_ITEM_SUBTITLE_1 = 21,
+  KEY_MENU_ITEM_SUBTITLE_2 = 22,
+  KEY_MENU_ITEM_SUBTITLE_3 = 23,
+  KEY_MENU_ITEM_SUBTITLE_4 = 24,
+  KEY_MENU_ITEM_SUBTITLE_5 = 25,
+  KEY_MENU_ITEM_SUBTITLE_6 = 26,
+  KEY_MENU_ITEM_SUBTITLE_7 = 27,
+  KEY_MENU_ITEM_SUBTITLE_8 = 28,
+  KEY_MENU_ITEM_SUBTITLE_9 = 29,
+  KEY_MENU_ITEM_SUBTITLE_10 = 30
 };
+
+int MIN_KEY = 0;
+int MAX_KEY = 30;
 
 // Dynamically allocated menu data structures
 static int s_menu_sections_count;
@@ -44,8 +65,11 @@ static char* save_string_in_buffer(char* s) {
 // Communication with phone
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
-  Tuple *tuple = dict_read_first(iterator);
-  while (tuple) {
+  for(int key = MIN_KEY; key <= MAX_KEY; key++) {
+    Tuple *tuple = dict_find(iterator, key);
+    if (tuple == NULL) {
+      continue;
+    }
     switch (tuple->key) {
       case KEY_MENU_SECTION_COUNT:
         APP_LOG(APP_LOG_LEVEL_DEBUG, "Building Menu");
@@ -68,10 +92,28 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
       case KEY_MENU_SECTION_TITLE:
         s_menu_sections[s_menu_current_section_index].title = save_string_in_buffer(tuple->value->cstring);
         break;
-      case KEY_MENU_ITEM_TITLE:
+      case KEY_MENU_ITEM_TITLE_1:
+      case KEY_MENU_ITEM_TITLE_2:
+      case KEY_MENU_ITEM_TITLE_3:
+      case KEY_MENU_ITEM_TITLE_4:
+      case KEY_MENU_ITEM_TITLE_5:
+      case KEY_MENU_ITEM_TITLE_6:
+      case KEY_MENU_ITEM_TITLE_7:
+      case KEY_MENU_ITEM_TITLE_8:
+      case KEY_MENU_ITEM_TITLE_9:
+      case KEY_MENU_ITEM_TITLE_10:
         s_menu_current_item_title = save_string_in_buffer(tuple->value->cstring);
         break;
-      case KEY_MENU_ITEM_SUBTITLE:
+      case KEY_MENU_ITEM_SUBTITLE_1:
+      case KEY_MENU_ITEM_SUBTITLE_2:
+      case KEY_MENU_ITEM_SUBTITLE_3:
+      case KEY_MENU_ITEM_SUBTITLE_4:
+      case KEY_MENU_ITEM_SUBTITLE_5:
+      case KEY_MENU_ITEM_SUBTITLE_6:
+      case KEY_MENU_ITEM_SUBTITLE_7:
+      case KEY_MENU_ITEM_SUBTITLE_8:
+      case KEY_MENU_ITEM_SUBTITLE_9:
+      case KEY_MENU_ITEM_SUBTITLE_10:
         s_menu_current_section_items[s_menu_current_item_index] = (SimpleMenuItem) {
           .title = s_menu_current_item_title,
           .subtitle = save_string_in_buffer(tuple->value->cstring)
@@ -86,7 +128,6 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         layer_add_child(window_layer, simple_menu_layer_get_layer(s_simple_menu_layer));
         break;
     }
-    tuple = dict_read_next(iterator);
   }
 }
 
@@ -113,8 +154,8 @@ void initialize_communication_with_phone() {
   app_message_register_inbox_dropped(inbox_dropped_callback);
   app_message_register_outbox_failed(outbox_failed_callback);
 
-  const int inbox_size = 1024;
-  const int outbox_size = 1024;
+  const int inbox_size = 2048;
+  const int outbox_size = 2048;
   app_message_open(inbox_size, outbox_size);
 }
 

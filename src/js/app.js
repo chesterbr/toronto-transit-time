@@ -1,3 +1,5 @@
+var ITEMS_PER_MESSAGE = 10;
+
 // Communications initialization
 
 Pebble.addEventListener("ready",
@@ -66,13 +68,20 @@ function locationSuccess(pos) {
 
       for (var section_title in json) {
         items = json[section_title];
-        enqueue_msg({ 'KEY_MENU_SECTION_ITEMS_COUNT' : items.length });
-        enqueue_msg({ 'KEY_MENU_SECTION_TITLE' : section_title });
-        items.forEach(function(item) {
-          enqueue_msg({ 'KEY_MENU_ITEM_TITLE' : item.title,
-                        'KEY_MENU_ITEM_SUBTITLE' : item.subtitle });
+        var bulk_message = {
+          'KEY_MENU_SECTION_ITEMS_COUNT' : items.length,
+          'KEY_MENU_SECTION_TITLE' : section_title
+        }
+        for(var i = 0; i < items.length; i++) {
+          n = (i % ITEMS_PER_MESSAGE) + 1;
+          bulk_message['KEY_MENU_ITEM_TITLE_' + n] = items[i].title;
+          bulk_message['KEY_MENU_ITEM_SUBTITLE_' + n] = items[i].subtitle;
+          if (n == ITEMS_PER_MESSAGE || i == items.length - 1) {
+            enqueue_msg(bulk_message);
+            bulk_message = {};
+          }
           // TODO store URL
-        });
+        }
       }
 
       enqueue_msg({ 'KEY_MENU_SHOW' : 0 })
