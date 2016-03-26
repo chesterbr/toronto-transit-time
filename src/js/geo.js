@@ -1,4 +1,4 @@
-function getCurrentLocation(callback) {
+function getLocation(callback) {
   navigator.geolocation.getCurrentPosition(
     callback,
     locationError,
@@ -10,4 +10,4 @@ function locationError(err) {
   console.log('Error requesting location!');
 }
 
-module.exports.getCurrentLocation = getCurrentLocation;
+module.exports.getLocation = getLocation;

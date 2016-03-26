@@ -1,13 +1,13 @@
 // External API calls
 
-function getRoutesForLocation(lat, lon, callback) {
+function getRoutes(lat, lon, callback) {
   var url = 'http://pebblettc.chester.me/menu' +
               '?lat=' + lat +
               '&lon=' + lon;
   xhrRequest(url, 'GET', callback);
 };
 
-function getPredictionsForRouteIndex(index, callback) {
+function getPredictions(index, callback) {
   // TODO implement
 };
 
@@ -20,5 +20,5 @@ function xhrRequest(url, type, callback) {
   xhr.send();
 };
 
-module.exports.getRoutesForLocation = getRoutesForLocation;
-module.exports.getPredictionsForRouteIndex = getPredictionsForRouteIndex
+module.exports.getRoutes = getRoutes;
+module.exports.getPredictions = getPredictions

@@ -1,11 +1,11 @@
-Api = require('api');
-Geo = require('geo');
-Bluetooth = require('bluetooth');
+internet = require('internet');
+geo = require('geo');
+bluetooth = require('bluetooth');
 
 function openRoutesList(e) {
-  Geo.getCurrentLocation(function(location) {
-    Api.getRoutesForLocation(location.coords.latitude, location.coords.longitude, function(result) {
-      Bluetooth.sendRoutes(result);
+  geo.getLocation(function(loc) {
+    internet.getRoutes(loc.coords.latitude, loc.coords.longitude, function(routes) {
+      bluetooth.sendRoutes(routes);
     })
   });
 }
