@@ -109,12 +109,20 @@ namespace :ttc do
   def curl(uri)
     url = URI.parse(uri)
     req = Net::HTTP::Get.new(url.to_s)
-    res = Net::HTTP.start(url.host, url.port) do |http|
-      http.request(req)
+    retries = [3, 30, 120]
+    begin
+      res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
+      raise "Unexpected HTTP status: #{res.code} #{res.msg}" if res.code.to_i >= 300
+      raise "Error response:\n#{res.body}" if res.body.include?("</Error>")
+    rescue StandardError => e
+      if delay = retries.shift
+        puts "Error during download of #{url}\n#{e}\nRetrying in #{delay}s..."
+        sleep delay
+        retry
+      else
+        raise
+      end
     end
     res.body
   end
-
-
-
 end
