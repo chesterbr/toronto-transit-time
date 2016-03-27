@@ -2,17 +2,19 @@ var TIMEOUT = 15000;
 var MAXIMUM_AGE = 60000;
 
 function getCoordinates(callback) {
-  navigator.geolocation.getCurrentPosition(
-    function(position) {
-      callback(position.coords.latitude, position.coords.longitude)
-    },
-    locationError,
-    {timeout: TIMEOUT, maximumAge: MAXIMUM_AGE}
-  );
-};
+  var onSuccess, onError, options;
 
-function locationError(err) {
-  console.log('Error requesting location!');
+  onSuccess = function(position) {
+    callback(position.coords.latitude, position.coords.longitude);
+  };
+
+  onError = function(err) {
+    console.log('Error requesting location!');
+  };
+
+  options = {timeout: TIMEOUT, maximumAge: MAXIMUM_AGE}
+
+  navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 };
 
 module.exports.getCoordinates = getCoordinates;
