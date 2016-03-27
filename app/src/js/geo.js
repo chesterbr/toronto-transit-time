@@ -15,4 +15,4 @@ function locationError(err) {
   console.log('Error requesting location!');
 };
 
-module.exports.getLocation = getCoordinates;
+module.exports.getCoordinates = getCoordinates;
