@@ -1,5 +1,5 @@
-var timeout = 15000;
-var maximumAge = 60000;
+var TIMEOUT = 15000;
+var MAXIMUM_AGE = 60000;
 
 function getCoordinates(callback) {
   navigator.geolocation.getCurrentPosition(
@@ -7,7 +7,7 @@ function getCoordinates(callback) {
       callback(position.coords.latitude, position.coords.longitude)
     },
     locationError,
-    {timeout: timeout, maximumAge: maximumAge}
+    {timeout: TIMEOUT, maximumAge: MAXIMUM_AGE}
   );
 };
 
