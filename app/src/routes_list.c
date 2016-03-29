@@ -3,11 +3,12 @@
 #include "string_buffer.h"
 
 static void initialize_sections_array(int section_count);
-static void initialize_current_session(int items_count);
+static void initialize_session_struct_and_items_array(int items_count);
 static void save_current_section_title(char * title);
 static void save_current_item_title(char* title);
-static void save_current_item_subtitle(char* subtitle);
+static void build_menu_item_using_title_and_subtitle(char* subtitle);
 static void show_list();
+static void menu_select_callback();
 static void free_sections_and_items_arrays();
 
 enum {
@@ -40,7 +41,6 @@ enum {
 
 static Window *s_routes_list_window;
 static SimpleMenuLayer *s_simple_menu_layer;
-
 
 // Dynamically allocated menu data structures
 static int s_menu_sections_count;
@@ -80,7 +80,7 @@ void routes_list_inbox_received(DictionaryIterator *iterator, void *context) {
         string_buffer_init((int)tuple->value->int32);
         break;
       case KEY_MENU_SECTION_ITEMS_COUNT:
-        initialize_current_session((int)tuple->value->int32);
+        initialize_session_struct_and_items_array((int)tuple->value->int32);
         break;
       case KEY_MENU_SECTION_TITLE:
         save_current_section_title(tuple->value->cstring);
@@ -107,7 +107,7 @@ void routes_list_inbox_received(DictionaryIterator *iterator, void *context) {
       case KEY_MENU_ITEM_SUBTITLE_8:
       case KEY_MENU_ITEM_SUBTITLE_9:
       case KEY_MENU_ITEM_SUBTITLE_10:
-        save_current_item_subtitle(tuple->value->cstring);
+        build_menu_item_using_title_and_subtitle(tuple->value->cstring);
         break;
       case KEY_MENU_SHOW:
         show_list();
@@ -124,7 +124,7 @@ static void initialize_sections_array(int section_count) {
   s_menu_current_section_index = -1;
 }
 
-static void initialize_current_session(int items_count) {
+static void initialize_session_struct_and_items_array(int items_count) {
   s_menu_current_section_items = (SimpleMenuItem *)malloc(items_count * sizeof(SimpleMenuItem));
   s_menu_sections[++s_menu_current_section_index] = (SimpleMenuSection) {
     .num_items = items_count,
@@ -141,10 +141,11 @@ static void save_current_item_title(char* title) {
   s_menu_current_item_title = string_buffer_store(title);
 }
 
-static void save_current_item_subtitle(char* subtitle) {
+static void build_menu_item_using_title_and_subtitle(char* subtitle) {
   s_menu_current_section_items[s_menu_current_item_index] = (SimpleMenuItem) {
     .title = s_menu_current_item_title,
-    .subtitle = string_buffer_store(subtitle)
+    .subtitle = string_buffer_store(subtitle),
+    .callback = menu_select_callback
   };
   s_menu_current_item_index++;
 }
@@ -154,6 +155,12 @@ static void show_list() {
   GRect bounds = layer_get_frame(window_layer);
   s_simple_menu_layer = simple_menu_layer_create(bounds, s_routes_list_window, s_menu_sections, s_menu_current_section_index + 1, NULL);
   layer_add_child(window_layer, simple_menu_layer_get_layer(s_simple_menu_layer));
+}
+
+static void menu_select_callback(int index, void *ctx) {
+  // s_first_menu_items[index].subtitle = "You've hit select here!";
+  // layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "index now %d", index);
 }
 
 static void free_sections_and_items_arrays() {
