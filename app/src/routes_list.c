@@ -40,7 +40,10 @@ enum {
 };
 
 static Window *s_routes_list_window;
-static SimpleMenuLayer *s_simple_menu_layer;
+static MenuLayer *s_menu_layer;
+
+// TODO we're still using the simplemenulayer's data structures. It was a quick hack
+// to make it work, but we should convert to our own structures.
 
 // Dynamically allocated menu data structures
 static int s_menu_sections_count;
@@ -58,7 +61,7 @@ void routes_list_init() {
 }
 
 void routes_list_deinit() {
-  simple_menu_layer_destroy(s_simple_menu_layer);
+  menu_layer_destroy(s_menu_layer);
   free_sections_and_items_arrays();
   string_buffer_deinit();
   window_destroy(s_routes_list_window);
@@ -150,17 +153,52 @@ static void build_menu_item_using_title_and_subtitle(char* subtitle) {
   s_menu_current_item_index++;
 }
 
+static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
+  return s_menu_sections_count;
+}
+
+static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *data) {
+  return s_menu_sections[section_index].num_items;
+}
+
+static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t section_index, void *data) {
+  return 16; //MENU_CELL_BASIC_HEADER_HEIGHT;
+}
+
+static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, uint16_t section_index, void *data) {
+  menu_cell_basic_header_draw(ctx, cell_layer, s_menu_sections[section_index].title);
+}
+
+static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
+  menu_cell_basic_draw(ctx, cell_layer, s_menu_sections[cell_index->section].items[cell_index->row].title,
+     s_menu_sections[cell_index->section].items[cell_index->row].subtitle,
+    NULL);
+}
+
+static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
+   // s_first_menu_items[index].subtitle = "You've hit select here!";
+  // layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "index now %d %d", cell_index->section, cell_index-> row);
+}
+
+// TODO move this guy back up, forward-declare dependencies
 static void show_list() {
   Layer *window_layer = window_get_root_layer(s_routes_list_window);
   GRect bounds = layer_get_frame(window_layer);
-  s_simple_menu_layer = simple_menu_layer_create(bounds, s_routes_list_window, s_menu_sections, s_menu_current_section_index + 1, NULL);
-  layer_add_child(window_layer, simple_menu_layer_get_layer(s_simple_menu_layer));
-}
+  // s_simple_menu_layer = simple_menu_layer_create(bounds, s_routes_list_window, s_menu_sections, s_menu_current_section_index + 1, NULL);
+  s_menu_layer = menu_layer_create(bounds);
+  menu_layer_set_callbacks(s_menu_layer, NULL, (MenuLayerCallbacks){
+    .get_num_sections = menu_get_num_sections_callback,
+    .get_num_rows = menu_get_num_rows_callback,
+    .get_header_height = menu_get_header_height_callback,
+    .draw_header = menu_draw_header_callback,
+    .draw_row = menu_draw_row_callback,
+    .select_click = menu_select_callback,
+  });
 
-static void menu_select_callback(int index, void *ctx) {
-  // s_first_menu_items[index].subtitle = "You've hit select here!";
-  // layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "index now %d", index);
+ menu_layer_set_click_config_onto_window(s_menu_layer, s_routes_list_window);
+
+  layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
 }
 
 static void free_sections_and_items_arrays() {
