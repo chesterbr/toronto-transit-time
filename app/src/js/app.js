@@ -1,4 +1,4 @@
-internet = require('internet'); // Communication with back-end
+internet = require('internet'); // Communication with back-ends
 watch    = require('watch');    // Communication with watch
 geo      = require('geo');      // Geolocation
 
@@ -10,7 +10,7 @@ function openRoutesList(e) {
   });
 }
 
-watch.routeSelected = function(route) {
+function openPredictions(route) {
   console.log("callback triggered");
   console.log(route);
   // internet.getPredictions(route,
@@ -18,7 +18,8 @@ watch.routeSelected = function(route) {
   // );
 }
 
-Pebble.addEventListener('ready', openRoutesList);
+watch.addEventListener('ready', openRoutesList);
+watch.addEventListener('route_selected', openPredictions);
 
 
 

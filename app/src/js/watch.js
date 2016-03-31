@@ -6,15 +6,23 @@ var current_item_ord;
 
 var MAX_ITEMS_PER_MESSAGE = 10;
 
-var routeSelected;
+var routeSelectedCallback;
 
 function sendRoutes(response) {
   enqueueMessages(JSON.parse(response));
   dispatchMessages();
 }
 
+function addEventListener(event, callback) {
+  if (event == "route_selected") {
+    routeSelectedCallback = callback;
+  } else {
+    Pebble.addEventListener(event, callback);
+  }
+}
+
+module.exports.addEventListener = addEventListener;
 module.exports.sendRoutes = sendRoutes;
-// TODO fix  callback setting
 
 // Private
 
