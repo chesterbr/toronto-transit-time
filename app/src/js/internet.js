@@ -7,6 +7,11 @@ function getRoutes(lat, lon, callback) {
   xhrRequest(url, 'GET', callback);
 };
 
+module.exports.getRoutes = getRoutes;
+module.exports.getPredictions = getPredictions
+
+// Private
+
 function getPredictions(index, callback) {
   // TODO implement
 };
@@ -20,5 +25,3 @@ function xhrRequest(url, type, callback) {
   xhr.send();
 };
 
-module.exports.getRoutes = getRoutes;
-module.exports.getPredictions = getPredictions

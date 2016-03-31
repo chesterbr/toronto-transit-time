@@ -10,11 +10,13 @@ function openRoutesList(e) {
   });
 }
 
-// watch.routeSelected = function(route) {
-//   internet.getPredictions(route,
-//     watch.sendPredictions
-//   );
-// }
+watch.routeSelected = function(route) {
+  console.log("callback triggered");
+  console.log(route);
+  // internet.getPredictions(route,
+  //   watch.sendPredictions
+  // );
+}
 
 Pebble.addEventListener('ready', openRoutesList);
 

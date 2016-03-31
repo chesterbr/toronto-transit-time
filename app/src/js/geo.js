@@ -6,8 +6,11 @@ function getLocation(callback) {
   );
 }
 
+module.exports.getLocation = getLocation;
+
+// Private
+
 function locationError(err) {
   console.log('Error requesting location!');
 }
 
-module.exports.getLocation = getLocation;

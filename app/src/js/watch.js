@@ -6,10 +6,25 @@ var current_item_ord;
 
 var MAX_ITEMS_PER_MESSAGE = 10;
 
+var routeSelected;
+
 function sendRoutes(response) {
   enqueueMessages(JSON.parse(response));
   dispatchMessages();
 }
+
+module.exports.sendRoutes = sendRoutes;
+// TODO fix  callback setting
+
+// Private
+
+Pebble.addEventListener('appmessage', function(message) {
+  section = message.payload.KEY_MENU_SELECTED_SECTION;
+  item = message.payload.KEY_MENU_SELECTED_ITEM;
+  if (section & item) {
+    routeSelected(section + "," + item);
+  }
+});
 
 function enqueueMessages(stops) {
   new_message();
@@ -85,5 +100,3 @@ function stringBufferSize(stops) {
   });
   return size;
 }
-
-module.exports.sendRoutes = sendRoutes;

@@ -12,6 +12,7 @@ static void menu_select_callback();
 static void free_sections_and_items_arrays();
 
 enum {
+  // Inbound messages
   KEY_MENU_SECTION_COUNT       = 100,
   KEY_MENU_STRING_BUFFER_SIZE  = 101,
   KEY_MENU_SECTION_ITEMS_COUNT = 102,
@@ -36,7 +37,11 @@ enum {
   KEY_MENU_ITEM_SUBTITLE_9     = 121,
   KEY_MENU_ITEM_TITLE_10       = 122,
   KEY_MENU_ITEM_SUBTITLE_10    = 123,
-  KEY_MENU_SHOW                = 124
+  KEY_MENU_SHOW                = 124,
+
+  // Outbound messages
+  KEY_MENU_SELECTED_SECTION    = 125,
+  KEY_MENU_SELECTED_ITEM       = 126,
 };
 
 static Window *s_routes_list_window;
@@ -178,7 +183,20 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
    // s_first_menu_items[index].subtitle = "You've hit select here!";
   // layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "index now %d %d", cell_index->section, cell_index-> row);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "index now %d %d", cell_index->section, cell_index-> row);
+  DictionaryIterator *out_iter;
+  AppMessageResult result = app_message_outbox_begin(&out_iter);
+  if (result == APP_MSG_OK) {
+    dict_write_int(out_iter, KEY_MENU_SELECTED_SECTION, &cell_index->section, sizeof(cell_index->section), false);
+    dict_write_int(out_iter, KEY_MENU_SELECTED_ITEM, &cell_index->row, sizeof(cell_index->row), false);
+    result = app_message_outbox_send();
+    if (result != APP_MSG_OK) {
+      APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int)result);
+    }
+  } else {
+    // The outbox cannot be used right now
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
+  }
 }
 
 // TODO move this guy back up, forward-declare dependencies
