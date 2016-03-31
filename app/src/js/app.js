@@ -10,11 +10,11 @@ function openRoutesList(e) {
   });
 }
 
-function openPredictions(route) {
+function openPredictions(uri) {
   console.log("callback triggered");
-  console.log(route);
+  console.log(uri);
   // internet.getPredictions(route,
-  //   watch.sendPredictions
+  //  watch.sendPredictions
   // );
 }
 

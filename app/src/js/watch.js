@@ -1,15 +1,18 @@
 // Asynchronous communication with Pebble
 
+var MAX_ITEMS_PER_MESSAGE = 10;
+
+var stops_and_routes;
+var routeSelectedCallback;
+
+// These are used only to enqueue the messages
 var message_queue = [];
 var current_message;
 var current_item_ord;
 
-var MAX_ITEMS_PER_MESSAGE = 10;
-
-var routeSelectedCallback;
-
 function sendRoutes(response) {
-  enqueueMessages(JSON.parse(response));
+  stops_and_routes = JSON.parse(response);
+  enqueueMessages();
   dispatchMessages();
 }
 
@@ -27,19 +30,19 @@ module.exports.sendRoutes = sendRoutes;
 // Private
 
 Pebble.addEventListener('appmessage', function(message) {
-  section = message.payload.KEY_MENU_SELECTED_SECTION;
-  item = message.payload.KEY_MENU_SELECTED_ITEM;
+  stop_index = message.payload.KEY_MENU_SELECTED_SECTION;
+  route_index = message.payload.KEY_MENU_SELECTED_ITEM;
   if (section & item) {
-    routeSelected(section + "," + item);
+    routeSelectedCallback(stops_and_routes[stop_index][route_index].uri);
   }
 });
 
-function enqueueMessages(stops) {
+function enqueueMessages() {
   new_message();
   append_to_message('section_count', stops.length);
   append_to_message('string_buffer_size', stringBufferSize(stops));
 
-  stops.forEach(function(stop) {
+  stops_and_routes.forEach(function(stop) {
     new_message();
     routes = stop['routes'];
     append_to_message('section_items_count', routes.length);
@@ -47,7 +50,6 @@ function enqueueMessages(stops) {
     routes.forEach(function(route) {
       append_to_message('item_title', route['route']);
       append_to_message('item_subtitle', route['direction']);
-      // TODO store URL for subsequent call requests from Pebble
     });
   });
 
