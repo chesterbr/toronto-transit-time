@@ -26,6 +26,33 @@ function sendRoutes(routes) {
 
 function sendPredictions(predictions) {
   console.log(JSON.stringify(predictions));
+
+
+  forEach(predictions, function(direction) {
+    console.log(direction.title);
+    forEach(direction, function(prediction) {
+      console.log(prediction.epochTime);
+    });
+    forEach(direction, function(message) {
+      console.log(message.text);
+    });
+  });
+
+}
+
+// Tags that can appear multiple times in the TTC API XML are
+// represented like tag_1, tag_2, etc., so this code will invoke
+// the callback for each value of a tag_XXX property in obj.
+//
+// Notice that the callback argument name is the tag name.
+function forEach(obj, callback) {
+  keyPrefix = callback.toString().match(/function\s.*?\(([^)]*)\)/)[1];
+  keys = Object.keys(obj).filter(function(key) {
+    return key.indexOf(keyPrefix + "_") == 0;
+  });
+  keys.forEach(function(key) {
+    callback(obj[key]);
+  });
 }
 
 
