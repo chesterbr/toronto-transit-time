@@ -1,14 +1,7 @@
 // Asynchronous communication with Pebble
 
-var MAX_ITEMS_PER_MESSAGE = 10;
-
-var stops_and_routes;
+var stopsAndRoutes;
 var routeSelectedCallback;
-
-// These are used only to enqueue the messages
-var message_queue = [];
-var current_message;
-var current_item_ord;
 
 function addEventListener(event, callback) {
   if (event == "route_selected") {
@@ -19,15 +12,47 @@ function addEventListener(event, callback) {
 }
 
 function sendRoutes(routes) {
-  stops_and_routes = routes;
-  enqueueMessages();
+  stopsAndRoutes = routes;
+  buildMenuMessages();
   dispatchMessages();
 }
 
 function sendPredictions(predictions) {
   console.log(JSON.stringify(predictions));
+  buildPredictionMessages();
+  // dispatchMessages();
+}
 
+module.exports.addEventListener = addEventListener;
+module.exports.sendRoutes = sendRoutes;
+module.exports.sendPredictions = sendPredictions;
 
+Pebble.addEventListener('appmessage', processIncomingMessage);
+
+// Stops and routes (menu)
+
+function buildMenuMessages() {
+  appendToMessage('menu_section_count', stopsAndRoutes.length);
+  appendToMessage('menu_string_buffer_size', stringBufferSize(stopsAndRoutes));
+
+  stopsAndRoutes.forEach(function(stop) {
+    routes = stop['routes'];
+    appendToMessage('menu_section_items_count', routes.length);
+    appendToMessage('menu_section_title', stop['stop']);
+    routes.forEach(function(route) {
+      appendToMessage('menu_item_title', route['route']);
+      appendToMessage('menu_item_subtitle', route['direction']);
+    });
+    enqueueMessage();
+  });
+
+  appendToMessage('menu_show', 0);
+  enqueueMessage();
+}
+
+// Predictions (screen)
+
+function buildPredictionMessages() {
   forEach(predictions, function(direction) {
     console.log(direction.title);
     forEach(direction, function(prediction) {
@@ -37,97 +62,68 @@ function sendPredictions(predictions) {
       console.log(message.text);
     });
   });
-
 }
 
-// Tags that can appear multiple times in the TTC API XML are
-// represented like tag_1, tag_2, etc., so this code will invoke
-// the callback for each value of a tag_XXX property in obj.
-//
-// Notice that the callback argument name is the tag name.
 function forEach(obj, callback) {
-  keyPrefix = callback.toString().match(/function\s.*?\(([^)]*)\)/)[1];
-  keys = Object.keys(obj).filter(function(key) {
-    return key.indexOf(keyPrefix + "_") == 0;
-  });
-  keys.forEach(function(key) {
-    callback(obj[key]);
+  // Needed because tags that appear multiple times on the TTC API XML
+  // are repesented like sometag_1, sometag_2, etc.
+  // The callback *argument* name is the tag name.
+  tagName = callback.toString().match(/function\s.*?\(([^)]*)\)/)[1];
+  Object.keys(obj).forEach(function(key) {
+    if (key.indexOf(tagName + "_") == 0) {
+      callback(obj[key]);
+    }
   });
 }
 
+// Outgoing message queuing/dispatching (for all screens)
 
-module.exports.addEventListener = addEventListener;
-module.exports.sendRoutes = sendRoutes;
-module.exports.sendPredictions = sendPredictions;
+var MAX_ITEMS_PER_MESSAGE = 10;
 
-// Private
+var message_queue = [];
+var message = {};
+var keySuffix = 1;
 
-Pebble.addEventListener('appmessage', function(message) {
-  stop_index = message.payload.KEY_MENU_SELECTED_SECTION;
-  route_index = message.payload.KEY_MENU_SELECTED_ITEM;
-  if (typeof(stop_index) == "number") {
-    routeSelectedCallback(stops_and_routes[stop_index].routes[route_index].uri);
+function appendToMessage(type, value) {
+  var key = 'KEY_' + type.toUpperCase();
+  if (type == 'menu_item_title') {
+    key += '_' + keySuffix;
+  } else if (type == 'menu_item_subtitle') {
+    key += '_' + keySuffix++;
   }
-});
+  message[key] = value;
 
-function enqueueMessages() {
-  new_message();
-  append_to_message('section_count', stops_and_routes.length);
-  append_to_message('string_buffer_size', stringBufferSize(stops_and_routes));
+  if (keySuffix > MAX_ITEMS_PER_MESSAGE) {
+    enqueueMessage();
+  }
+}
 
-  stops_and_routes.forEach(function(stop) {
-    new_message();
-    routes = stop['routes'];
-    append_to_message('section_items_count', routes.length);
-    append_to_message('section_title', stop['stop']);
-    routes.forEach(function(route) {
-      append_to_message('item_title', route['route']);
-      append_to_message('item_subtitle', route['direction']);
-    });
-  });
-
-  append_to_message('show', 0);
+function enqueueMessage() {
+  if (message && Object.keys(message).length > 0) {
+    message_queue.push(message);
+  }
+  message = {}
+  keySuffix = 1;
 }
 
 function dispatchMessages() {
-  enqueue_current_message_if_any();
-  dispatch_until_queue_is_empty();
-}
-
-function dispatch_until_queue_is_empty() {
   var dict = message_queue.shift();
   if (dict) {
     Pebble.sendAppMessage(dict, function(e) {
-      dispatch_until_queue_is_empty();
+      dispatchMessages();
     }, function(e) {
       console.log('Error sending message to Pebble!' + JSON.stringify(e));
     });
   }
 }
 
-function new_message() {
-  enqueue_current_message_if_any();
-  current_message = {}
-  current_item_ord = 1;
-}
+// Incoming message processing
 
-function append_to_message(type, value) {
-  var key = 'KEY_MENU_' + type.toUpperCase();
-  if (type == 'item_title') {
-    key += '_' + current_item_ord;
-  } else if (type == 'item_subtitle') {
-    key += '_' + current_item_ord++;
-  }
-  current_message[key] = value;
-
-  if (current_item_ord > MAX_ITEMS_PER_MESSAGE) {
-    new_message();
-  }
-}
-
-function enqueue_current_message_if_any() {
-  if (current_message && Object.keys(current_message).length > 0) {
-    message_queue.push(current_message);
+function processIncomingMessage(message) {
+  stop_index = message.payload.KEY_MENU_SELECTED_SECTION;
+  route_index = message.payload.KEY_MENU_SELECTED_ITEM;
+  if (typeof(stop_index) == "number") {
+    routeSelectedCallback(stopsAndRoutes[stop_index].routes[route_index].uri);
   }
 }
 
