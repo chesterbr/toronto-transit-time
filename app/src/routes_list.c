@@ -12,7 +12,7 @@ static void menu_select_callback();
 static void free_sections_and_items_arrays();
 
 enum {
-  // Inbound messages
+  // Inbound message keys
   KEY_MENU_SECTION_COUNT       = 100,
   KEY_MENU_STRING_BUFFER_SIZE  = 101,
   KEY_MENU_SECTION_ITEMS_COUNT = 102,
@@ -39,7 +39,7 @@ enum {
   KEY_MENU_ITEM_SUBTITLE_10    = 123,
   KEY_MENU_SHOW                = 124,
 
-  // Outbound messages
+  // Outbound message keys
   KEY_MENU_SELECTED_SECTION    = 125,
   KEY_MENU_SELECTED_ITEM       = 126,
 };

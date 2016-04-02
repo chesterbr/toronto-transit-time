@@ -1,5 +1,6 @@
-#include <pebble-ttc.h>
-#include <routes_list.h>
+#include "pebble-ttc.h"
+#include "routes_list.h"
+#include "prediction_screen.h"
 
 int main(void) {
   app_init();
@@ -30,6 +31,7 @@ void initialize_communication_with_phone() {
 
 void inbox_received_callback(DictionaryIterator *iterator, void *context) {
   routes_list_inbox_received(iterator, context);
+  prediction_screen_inbox_received(iterator, context);
 }
 
 void inbox_dropped_callback(AppMessageResult reason, void *context) {

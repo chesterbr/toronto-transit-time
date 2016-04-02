@@ -66,23 +66,40 @@ function calcBufferSizeForMenuStrings() {
 // Predictions (screen)
 
 function buildPredictionMessages() {
-  console.log(predictions.dirTitleBecauseNoPredictions);
+  // When there are no predictions, this field appears, just send and be done.
+  if (predictions.dirTitleBecauseNoPredictions) {
+    appendToMessage('prediction_title', predictions.dirTitleBecauseNoPredictions);
+    appendToMessage('prediction_show', 0);
+    enqueueMessage();
+    return;
+  }
+
+  // Each direction goes on its own message (with a set of prediction times)
   forEach(predictions, function(direction) {
-    console.log(direction.title);
+    appendToMessage('prediction_title', direction.title);
     forEach(direction, function(prediction) {
-      console.log(prediction.epochTime);
+      appendToMessage('prediction_epoch_time', prediction.epochTime);
     });
-    forEach(direction, function(message) {
-      console.log(message.text);
-    });
+    enqueueMessage();
   });
+
+  // TTC alerts are also named "message" - don't mix up with our message
+  var ttcAlerts = "";
+  forEach(predictions, function(message) {
+    ttcAlerts = ttcAlerts + message.text + " ";
+  });
+  if (ttcAlerts.trim() != "") {
+    appendToMessage('prediction_messages', ttcAlerts.trim());
+  }
+  appendToMessage('prediction_show', 0);
+  enqueueMessage();
 }
 
 function forEach(obj, callback) {
   // Needed because tags that appear multiple times on the TTC API XML
   // are repesented like sometag_1, sometag_2, etc.
   // The callback *argument* name is the tag name.
-  tagName = callback.toString().match(/function\s.*?\(([^)]*)\)/)[1];
+  var tagName = callback.toString().match(/function\s.*?\(([^)]*)\)/)[1];
   Object.keys(obj).forEach(function(key) {
     if (key.indexOf(tagName + "_") == 0) {
       callback(obj[key]);
@@ -102,7 +119,7 @@ function appendToMessage(type, value) {
   var key = 'KEY_' + type.toUpperCase();
   if (type == 'menu_item_title') {
     key += '_' + keySuffix;
-  } else if (type == 'menu_item_subtitle') {
+  } else if (type == 'menu_item_subtitle' || type == 'prediction_epoch_time') {
     key += '_' + keySuffix++;
   }
   message[key] = value;
