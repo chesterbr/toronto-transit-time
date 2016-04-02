@@ -32,15 +32,15 @@ module.exports.sendRoutes = sendRoutes;
 Pebble.addEventListener('appmessage', function(message) {
   stop_index = message.payload.KEY_MENU_SELECTED_SECTION;
   route_index = message.payload.KEY_MENU_SELECTED_ITEM;
-  if (section & item) {
-    routeSelectedCallback(stops_and_routes[stop_index][route_index].uri);
+  if (typeof(stop_index) == "number") {
+    routeSelectedCallback(stops_and_routes[stop_index].routes[route_index].uri);
   }
 });
 
 function enqueueMessages() {
   new_message();
-  append_to_message('section_count', stops.length);
-  append_to_message('string_buffer_size', stringBufferSize(stops));
+  append_to_message('section_count', stops_and_routes.length);
+  append_to_message('string_buffer_size', stringBufferSize(stops_and_routes));
 
   stops_and_routes.forEach(function(stop) {
     new_message();
