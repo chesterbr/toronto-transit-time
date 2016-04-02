@@ -20,7 +20,7 @@ function sendRoutes(routes) {
 function sendPredictions(predictions) {
   console.log(JSON.stringify(predictions));
   buildPredictionMessages();
-  // dispatchMessages();
+  dispatchMessages();
 }
 
 module.exports.addEventListener = addEventListener;
@@ -33,7 +33,7 @@ Pebble.addEventListener('appmessage', processIncomingMessage);
 
 function buildMenuMessages() {
   appendToMessage('menu_section_count', stopsAndRoutes.length);
-  appendToMessage('menu_string_buffer_size', stringBufferSize(stopsAndRoutes));
+  appendToMessage('menu_string_buffer_size', calcBufferSizeForMenuStrings());
 
   stopsAndRoutes.forEach(function(stop) {
     routes = stop['routes'];
@@ -50,9 +50,23 @@ function buildMenuMessages() {
   enqueueMessage();
 }
 
+function calcBufferSizeForMenuStrings() {
+  var size = 0;
+  stopsAndRoutes.forEach(function(stop) {
+    routes = stop['routes'];
+    size += stop['stop'].length + 1;
+    routes.forEach(function(route) {
+      size += route['route'].length + 1;
+      size += route['direction'].length + 1;
+    });
+  });
+  return size;
+}
+
 // Predictions (screen)
 
 function buildPredictionMessages() {
+  console.log(predictions.dirTitleBecauseNoPredictions);
   forEach(predictions, function(direction) {
     console.log(direction.title);
     forEach(direction, function(prediction) {
@@ -80,7 +94,7 @@ function forEach(obj, callback) {
 
 var MAX_ITEMS_PER_MESSAGE = 10;
 
-var message_queue = [];
+var messageQueue = [];
 var message = {};
 var keySuffix = 1;
 
@@ -100,14 +114,14 @@ function appendToMessage(type, value) {
 
 function enqueueMessage() {
   if (message && Object.keys(message).length > 0) {
-    message_queue.push(message);
+    messageQueue.push(message);
   }
   message = {}
   keySuffix = 1;
 }
 
 function dispatchMessages() {
-  var dict = message_queue.shift();
+  var dict = messageQueue.shift();
   if (dict) {
     Pebble.sendAppMessage(dict, function(e) {
       dispatchMessages();
@@ -120,22 +134,9 @@ function dispatchMessages() {
 // Incoming message processing
 
 function processIncomingMessage(message) {
-  stop_index = message.payload.KEY_MENU_SELECTED_SECTION;
-  route_index = message.payload.KEY_MENU_SELECTED_ITEM;
-  if (typeof(stop_index) == "number") {
-    routeSelectedCallback(stopsAndRoutes[stop_index].routes[route_index].uri);
+  stop = message.payload.KEY_MENU_SELECTED_SECTION;
+  route = message.payload.KEY_MENU_SELECTED_ITEM;
+  if (typeof(stop) == "number") {
+    routeSelectedCallback(stopsAndRoutes[stop].routes[route].uri);
   }
-}
-
-function stringBufferSize(stops) {
-  var size = 0;
-  stops.forEach(function(stop) {
-    routes = stop['routes'];
-    size += stop['stop'].length + 1;
-    routes.forEach(function(route) {
-      size += route['route'].length + 1;
-      size += route['direction'].length + 1;
-    });
-  });
-  return size;
 }
