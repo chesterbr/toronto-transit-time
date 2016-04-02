@@ -1,17 +1,19 @@
 // External API calls
+// All returns are JavaScript objects
 
 function getRoutes(lat, lon, callback) {
   var url = 'http://pebblettc.chester.me/menu' +
               '?lat=' + lat +
               '&lon=' + lon;
-  xhrRequest(url, 'GET',
-    callback
-  );
+  xhrRequest(url, 'GET', function(json_routes) {
+    routes = JSON.parse(json_routes);
+    callback(routes);
+  });
 };
 
 function getPredictions(url, callback) {
-  xhrRequest(url, 'GET', function(xml) {
-    predictions = ttcXmlToJson(xml).body.predictions;
+  xhrRequest(url, 'GET', function(xml_predictions) {
+    predictions = ttcXmlToJson(xml_predictions).body.predictions;
     callback(predictions);
   });
 };

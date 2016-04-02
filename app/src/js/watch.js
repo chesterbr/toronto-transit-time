@@ -10,12 +10,6 @@ var message_queue = [];
 var current_message;
 var current_item_ord;
 
-function sendRoutes(response) {
-  stops_and_routes = JSON.parse(response);
-  enqueueMessages();
-  dispatchMessages();
-}
-
 function addEventListener(event, callback) {
   if (event == "route_selected") {
     routeSelectedCallback = callback;
@@ -24,8 +18,20 @@ function addEventListener(event, callback) {
   }
 }
 
+function sendRoutes(routes) {
+  stops_and_routes = routes;
+  enqueueMessages();
+  dispatchMessages();
+}
+
+function sendPredictions(predictions) {
+  console.log(JSON.stringify(predictions));
+}
+
+
 module.exports.addEventListener = addEventListener;
 module.exports.sendRoutes = sendRoutes;
+module.exports.sendPredictions = sendPredictions;
 
 // Private
 
