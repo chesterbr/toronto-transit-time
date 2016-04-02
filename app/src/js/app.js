@@ -13,9 +13,12 @@ function openRoutesList(e) {
 function openPredictions(uri) {
   console.log("callback triggered");
   console.log(uri);
-  // internet.getPredictions(route,
-  //  watch.sendPredictions
-  // );
+  internet.getPredictions(uri,
+    function(p) {
+      console.log(JSON.stringify(p));
+    }
+    // watch.sendPredictions
+  );
 }
 
 watch.addEventListener('ready', openRoutesList);
