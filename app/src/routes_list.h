@@ -1,3 +1,5 @@
+#pragma once
+
 #include <pebble.h>
 
 void routes_list_init();

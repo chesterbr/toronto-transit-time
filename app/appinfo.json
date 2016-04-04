@@ -14,7 +14,13 @@
     "dummy": 0
   },
   "resources": {
-    "media": []
+    "media": [
+      {
+        "type": "bitmap",
+        "name": "IMAGE_STREETCAR",
+        "file": "img/streetcar.png"
+      }
+    ]
   },
   "capabilities": ["location"],
   "appKeys": {
@@ -47,13 +53,15 @@
     "KEY_MENU_SELECTED_SECTION":    125,
     "KEY_MENU_SELECTED_ITEM":       126,
 
-    "KEY_PREDICTION_TITLE":         200,
-    "KEY_PREDICTION_EPOCH_TIME_1":  201,
-    "KEY_PREDICTION_EPOCH_TIME_2":  202,
-    "KEY_PREDICTION_EPOCH_TIME_3":  203,
-    "KEY_PREDICTION_EPOCH_TIME_4":  204,
-    "KEY_PREDICTION_EPOCH_TIME_5":  205,
-    "KEY_PREDICTION_MESSAGES":      206,
-    "KEY_PREDICTION_SHOW":          207
+    "KEY_PREDICTION_DIRECTION_COUNT": 200,
+    "KEY_PREDICTION_TTC_ALERT_COUNT": 201,
+    "KEY_PREDICTION_TITLE":           202,
+    "KEY_PREDICTION_EPOCH_TIME_1":    203,
+    "KEY_PREDICTION_EPOCH_TIME_2":    204,
+    "KEY_PREDICTION_EPOCH_TIME_3":    205,
+    "KEY_PREDICTION_EPOCH_TIME_4":    206,
+    "KEY_PREDICTION_EPOCH_TIME_5":    207,
+    "KEY_PREDICTION_TTC_ALERT":       208,
+    "KEY_PREDICTION_SHOW":            209
   }
 }

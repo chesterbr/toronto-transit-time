@@ -1,7 +1,9 @@
 #include "routes_list.h"
+#include "layers/info.h"
 #include <pebble.h>
 #include "string_buffer.h"
 
+static void initialize_menu_layer();
 static void initialize_sections_array(int section_count);
 static void initialize_session_struct_and_items_array(int items_count);
 static void save_current_section_title(char * title);
@@ -63,6 +65,10 @@ static SimpleMenuItem *s_menu_current_section_items;
 void routes_list_init() {
   s_routes_list_window = window_create();
   window_stack_push(s_routes_list_window, true);
+
+  initialize_menu_layer();
+
+  info_show("LOADING...");
 }
 
 void routes_list_deinit() {
@@ -199,11 +205,9 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
   }
 }
 
-// TODO move this guy back up, forward-declare dependencies
 static void show_list() {
   Layer *window_layer = window_get_root_layer(s_routes_list_window);
   GRect bounds = layer_get_frame(window_layer);
-  // s_simple_menu_layer = simple_menu_layer_create(bounds, s_routes_list_window, s_menu_sections, s_menu_current_section_index + 1, NULL);
   s_menu_layer = menu_layer_create(bounds);
   menu_layer_set_callbacks(s_menu_layer, NULL, (MenuLayerCallbacks){
     .get_num_sections = menu_get_num_sections_callback,
@@ -214,9 +218,14 @@ static void show_list() {
     .select_click = menu_select_callback,
   });
 
- menu_layer_set_click_config_onto_window(s_menu_layer, s_routes_list_window);
+  menu_layer_set_click_config_onto_window(s_menu_layer, s_routes_list_window);
 
   layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
+}
+
+
+static void initialize_menu_layer() {
+
 }
 
 static void free_sections_and_items_arrays() {

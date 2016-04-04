@@ -66,44 +66,43 @@ function calcBufferSizeForMenuStrings() {
 // Predictions (screen)
 
 function buildPredictionMessages() {
-  // When there are no predictions, this field appears, just send and be done.
-  if (predictions.dirTitleBecauseNoPredictions) {
+  // A prediction for a stop/route can have any number of "direction"s (usually
+  // variations of the same line) and TTC "message"s (e.g., for construction)
+  var directions = values(predictions, 'direction');
+  var ttcAlerts = values(predictions, 'message');
+
+  appendToMessage('prediction_direction_count', Math.max(directions.length, 1));
+  appendToMessage('prediction_ttc_alert_count', ttcAlerts.length);
+
+  if (directions.length == 0) {
     appendToMessage('prediction_title', predictions.dirTitleBecauseNoPredictions);
-    appendToMessage('prediction_show', 0);
-    enqueueMessage();
-    return;
-  }
-
-  // Each direction goes on its own message (with a set of prediction times)
-  forEach(predictions, function(direction) {
-    appendToMessage('prediction_title', direction.title);
-    forEach(direction, function(prediction) {
-      appendToMessage('prediction_epoch_time', prediction.epochTime);
+  } else {
+    directions.forEach(function(direction) {
+      appendToMessage('prediction_title', direction.title);
+      var times = values(direction, 'prediction');
+      times.forEach(function(time) {
+        appendToMessage('prediction_epoch_time', time.epochTime);
+      });
+      enqueueMessage();
     });
+  }
+
+  ttcAlerts.forEach(function(alert) {
+    appendToMessage('prediction_ttc_alert', alert.text);
     enqueueMessage();
   });
 
-  // TTC alerts are also named "message" - don't mix up with our message
-  var ttcAlerts = "";
-  forEach(predictions, function(message) {
-    ttcAlerts = ttcAlerts + message.text + " ";
-  });
-  if (ttcAlerts.trim() != "") {
-    appendToMessage('prediction_messages', ttcAlerts.trim());
-  }
   appendToMessage('prediction_show', 0);
   enqueueMessage();
 }
 
-function forEach(obj, callback) {
+function values(obj, tagName) {
   // Needed because tags that appear multiple times on the TTC API XML
   // are repesented like sometag_1, sometag_2, etc.
-  // The callback *argument* name is the tag name.
-  var tagName = callback.toString().match(/function\s.*?\(([^)]*)\)/)[1];
-  Object.keys(obj).forEach(function(key) {
-    if (key.indexOf(tagName + "_") == 0) {
-      callback(obj[key]);
-    }
+  return Object.keys(obj).sort().filter(function (key) {
+    return key.indexOf(tagName + "_") == 0;
+  }).map(function(key) {
+    return obj[key];
   });
 }
 

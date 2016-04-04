@@ -13,6 +13,7 @@ int main(void) {
 void app_init() {
   initialize_communication_with_phone();
   routes_list_init();
+  // prediction_screen_init();
 }
 
 void app_deinit() {
