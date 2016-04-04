@@ -3,18 +3,12 @@ TODO
 - Create statusbar layer
 - Ensure both windows add it (and never run over it, by pushing either top layer frame or bounds)
 
-- Separate layers/windows in their own dirs/files (see notes)
+- Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
 
 - Make EPOCH_TIME messages numeric
 - Store all info from prediction messages in arrays
-- Ensure prediction is not leaking memory (it will be called multiple time)
-- Display prediction info in successive layers
-  - Display times on a single layer, e.g.: 5m30s / 10m / 15m (possibly max 3?)
+- Ensure prediction is not leaking memory (it will be called multiple times)
+- Build scrollable textlayer with predictions
 - Devise a way to refresh the times
 
-- Create info layer (bitmap on top, message on bottom, all centered)
-  - Create function that sets the text and moves the info layer to the top of the current window
-    - Upon both windows' init, call function above with "Loading..."
-    - Upon proper events ("Finding you...", "Finding stops around you...", "Error", call function above)
-  - Create function that dismisses the info layer
-    - Upon "ready" state for windows, call function above
+- Upon proper events ("Finding you...", "Finding stops around you...", "Error", call info_message)
