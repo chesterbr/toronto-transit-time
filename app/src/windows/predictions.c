@@ -1,4 +1,4 @@
-#include "prediction_screen.h"
+#include "predictions.h"
 #include <pebble.h>
 #include <stdio.h>
 

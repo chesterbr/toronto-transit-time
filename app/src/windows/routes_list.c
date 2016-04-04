@@ -1,7 +1,7 @@
 #include "routes_list.h"
-#include "layers/info.h"
+#include "../layers/info.h"
+#include "../modules/string_buffer.h"
 #include <pebble.h>
-#include "string_buffer.h"
 
 static void initialize_menu_layer();
 static void initialize_sections_array(int section_count);
