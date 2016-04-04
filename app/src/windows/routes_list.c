@@ -48,6 +48,7 @@ enum {
 
 static Window *s_routes_list_window;
 static MenuLayer *s_menu_layer;
+static StatusBarLayer *s_status_bar_layer;
 
 // TODO we're still using the simplemenulayer's data structures. It was a quick hack
 // to make it work, but we should convert to our own structures.
@@ -208,6 +209,7 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
 static void show_list() {
   Layer *window_layer = window_get_root_layer(s_routes_list_window);
   GRect bounds = layer_get_frame(window_layer);
+  bounds.origin.y += STATUS_BAR_LAYER_HEIGHT;
   s_menu_layer = menu_layer_create(bounds);
   menu_layer_set_callbacks(s_menu_layer, NULL, (MenuLayerCallbacks){
     .get_num_sections = menu_get_num_sections_callback,
@@ -220,7 +222,10 @@ static void show_list() {
 
   menu_layer_set_click_config_onto_window(s_menu_layer, s_routes_list_window);
 
+  s_status_bar_layer = status_bar_layer_create();
+
   layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
+  layer_add_child(window_layer, status_bar_layer_get_layer(s_status_bar_layer));
 }
 
 
