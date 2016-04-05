@@ -1,4 +1,5 @@
 #include "routes_list.h"
+#include "predictions.h"
 #include "../layers/info.h"
 #include "../modules/string_buffer.h"
 #include <pebble.h>
@@ -190,7 +191,7 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
    // s_first_menu_items[index].subtitle = "You've hit select here!";
   // layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "index now %d %d", cell_index->section, cell_index-> row);
+  predictions_window_make_visible(PRED_MODE_LOADING);
   DictionaryIterator *out_iter;
   AppMessageResult result = app_message_outbox_begin(&out_iter);
   if (result == APP_MSG_OK) {

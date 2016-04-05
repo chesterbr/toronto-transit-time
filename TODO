@@ -1,9 +1,6 @@
 TODO
 
-- Create statusbar layer
-- Ensure both windows add it (and never run over it, by pushing either top layer frame or bounds)
-
-- Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
+(this is my internal tasks control; we're ready to publish when there is nothing else here)
 
 - Make EPOCH_TIME messages numeric
 - Store all info from prediction messages in arrays
@@ -11,4 +8,36 @@ TODO
 - Build scrollable textlayer with predictions
 - Devise a way to refresh the times
 
+- Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
+
 - Upon proper events ("Finding you...", "Finding stops around you...", "Error", call info_message)
+
+- Improve menu listing on Chalk (see the reduction of width on top/bottom can be done; consider not showing the current time)
+
+- Consider custom fonts
+
+- Improve back-end radius (make a smaller initial search, then double until a stop is found, until a limit)
+
+- Show error when no stops are found
+
+- Mention on docs:
+  - http://www.watchface-generator.de/converter/
+  - Slack
+  - presentation on geo
+
+- Fixture for tests (if I ever do them):
+
+<?xml version="1.0" encoding="utf-8" ?>
+<body copyright="All data copyright Toronto Transit Commission 2016.">
+<predictions agencyTitle="Toronto Transit Commission" routeTitle="504-King" routeTag="504" stopTitle="King St West At John St" stopTag="5775">
+  <direction title="East - 504 King towards Broadview Station via King">
+  <prediction epochTime="1459650781925" seconds="292" minutes="4" isDeparture="false" branch="504" dirTag="504_0_504" vehicle="4140" block="504_15_150" tripTag="30801640" />
+  <prediction epochTime="1459651216956" seconds="727" minutes="12" isDeparture="false" branch="504" dirTag="504_0_504" vehicle="4209" block="504_17_170" tripTag="30801641" />
+  <prediction epochTime="1459651621215" seconds="1131" minutes="18" isDeparture="false" branch="504" dirTag="504_0_504" vehicle="4126" block="504_18_180" tripTag="30801642" />
+  <prediction epochTime="1459652774063" seconds="2284" minutes="38" isDeparture="false" affectedByLayover="true" branch="504" dirTag="504_0_504" vehicle="4064" block="504_19_190" tripTag="30801643" />
+  <prediction epochTime="1459653194063" seconds="2704" minutes="45" isDeparture="false" affectedByLayover="true" branch="504" dirTag="504_0_504" vehicle="4178" block="504_21_210" tripTag="30801644" />
+  </direction>
+<message text="Starting at 2am on March 29 until 5am on April 11 - 504 King streetcars will be on diversion due to work at King St W at Charlotte St. EB: Spadina, Queen and Church. WB: York, Queen and Spadina. Visit www.ttc.ca for details." priority="Normal"/>
+</predictions>
+</body>
+

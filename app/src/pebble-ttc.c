@@ -40,7 +40,7 @@ static void initialize_communication_with_phone() {
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
   routes_list_inbox_received(iterator, context);
-  prediction_screen_inbox_received(iterator, context);
+  predictions_window_inbox_received(iterator, context);
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
