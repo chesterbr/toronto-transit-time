@@ -8,11 +8,11 @@ enum {
   KEY_PREDICTION_DIRECTION_COUNT = 200,
   KEY_PREDICTION_TTC_ALERT_COUNT = 201,
   KEY_PREDICTION_TITLE           = 202,
-  KEY_PREDICTION_EPOCH_TIME_1    = 203,
-  KEY_PREDICTION_EPOCH_TIME_2    = 204,
-  KEY_PREDICTION_EPOCH_TIME_3    = 205,
-  KEY_PREDICTION_EPOCH_TIME_4    = 206,
-  KEY_PREDICTION_EPOCH_TIME_5    = 207,
+  KEY_PREDICTION_SECONDS_1       = 203,
+  KEY_PREDICTION_SECONDS_2       = 204,
+  KEY_PREDICTION_SECONDS_3       = 205,
+  KEY_PREDICTION_SECONDS_4       = 206,
+  KEY_PREDICTION_SECONDS_5       = 207,
   KEY_PREDICTION_TTC_ALERT       = 208,
   KEY_PREDICTION_SHOW            = 209,
 };
@@ -43,15 +43,15 @@ void predictions_window_inbox_received(DictionaryIterator *iterator, void *conte
         // s_directions[++s_direction_index] = strdup(tuple->value->cstring);
         // APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", s_directions[s_direction_index]);
         break;
-      case KEY_PREDICTION_EPOCH_TIME_1:
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "%d %s", s_direction_index, tuple->value->cstring);
-        s_directions[++s_direction_index] = strdup(tuple->value->cstring);
-        break;
-      case KEY_PREDICTION_EPOCH_TIME_2:
-      case KEY_PREDICTION_EPOCH_TIME_3:
-      case KEY_PREDICTION_EPOCH_TIME_4:
-      case KEY_PREDICTION_EPOCH_TIME_5:
+      case KEY_PREDICTION_SECONDS_1:
+      case KEY_PREDICTION_SECONDS_2:
+      case KEY_PREDICTION_SECONDS_3:
+      case KEY_PREDICTION_SECONDS_4:
+      case KEY_PREDICTION_SECONDS_5:
       case KEY_PREDICTION_TTC_ALERT:
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "text: %d", (int)tuple->value->int32);
+        // s_directions[++s_direction_index] = strdup(tuple->value->cstring);
+        break;
         break;
       case KEY_PREDICTION_SHOW:
         predictions_window_make_visible(PRED_MODE_PREDICTIONS);

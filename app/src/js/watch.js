@@ -81,7 +81,7 @@ function buildPredictionMessages() {
       appendToMessage('prediction_title', direction.title);
       var times = values(direction, 'prediction');
       times.forEach(function(time) {
-        appendToMessage('prediction_epoch_time', time.epochTime);
+        appendToMessage('prediction_seconds', parseInt(time.seconds));
       });
       enqueueMessage();
     });
@@ -118,7 +118,7 @@ function appendToMessage(type, value) {
   var key = 'KEY_' + type.toUpperCase();
   if (type == 'menu_item_title') {
     key += '_' + keySuffix;
-  } else if (type == 'menu_item_subtitle' || type == 'prediction_epoch_time') {
+  } else if (type == 'menu_item_subtitle' || type == 'prediction_seconds') {
     key += '_' + keySuffix++;
   }
   message[key] = value;
