@@ -19,12 +19,18 @@ enum {
 
 static Window *s_predictions_window;
 
-static char **s_directions;
-static char **s_ttc_alerts;
+typedef struct {
+  char* text;
+  bool is_prediction;
+  int times_count;
+  int times[5];
+} DisplayableItem;
 
-static int s_direction_index;
+static DisplayableItem s_displayable_items[10];
+static int s_displayable_items_count;
 
 static char* strdup(const char* str);
+static char s_predictions_full_text[4000];
 
 void predictions_window_inbox_received(DictionaryIterator *iterator, void *context) {
   for(int key = KEY_PREDICTION_DIRECTION_COUNT; key <= KEY_PREDICTION_SHOW; key++) {
@@ -34,24 +40,24 @@ void predictions_window_inbox_received(DictionaryIterator *iterator, void *conte
     }
     switch (tuple->key) {
       case KEY_PREDICTION_DIRECTION_COUNT:
-        s_directions = malloc((int)tuple->value->int32 * sizeof(char*));
-        s_direction_index = -1;
+        s_displayable_items_count = 0;
         break;
       case KEY_PREDICTION_TTC_ALERT_COUNT:
         break;
       case KEY_PREDICTION_TITLE:
-        // s_directions[++s_direction_index] = strdup(tuple->value->cstring);
-        // APP_LOG(APP_LOG_LEVEL_DEBUG, "%s", s_directions[s_direction_index]);
+      case KEY_PREDICTION_TTC_ALERT:
+        s_displayable_items_count++;
+        s_displayable_items[s_displayable_items_count].text = strdup(tuple->value->cstring);
+        s_displayable_items[s_displayable_items_count].times_count = 0;
+        s_displayable_items[s_displayable_items_count].is_prediction = tuple->key == KEY_PREDICTION_TITLE;
         break;
       case KEY_PREDICTION_SECONDS_1:
       case KEY_PREDICTION_SECONDS_2:
       case KEY_PREDICTION_SECONDS_3:
       case KEY_PREDICTION_SECONDS_4:
       case KEY_PREDICTION_SECONDS_5:
-      case KEY_PREDICTION_TTC_ALERT:
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "text: %d", (int)tuple->value->int32);
-        // s_directions[++s_direction_index] = strdup(tuple->value->cstring);
-        break;
+        s_displayable_items[s_displayable_items_count].times[tuple->key-KEY_PREDICTION_SECONDS_1] = tuple->value->int32;
+        s_displayable_items[s_displayable_items_count].times_count++;
         break;
       case KEY_PREDICTION_SHOW:
         predictions_window_make_visible(PRED_MODE_PREDICTIONS);
@@ -75,13 +81,26 @@ void predictions_window_make_visible(int mode) {
     info_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
     // ensure we got the layer initialized and loaded with data
+    char* pos = s_predictions_full_text;
+    pos += snprintf(pos, 4000, "%d\n", s_displayable_items_count);
+    for(int i = 0; i < s_displayable_items_count; i++) {
+      DisplayableItem item = s_displayable_items[i];
+      pos += snprintf(pos, 4000, "%s\n", item.text);
+      for (int j = 0; j < item.times_count; j++) {
+        pos += snprintf(pos, 4000, "%ds /", item.times[j]);
+      }
+    }
+    APP_LOG(APP_LOG_LEVEL_ERROR, s_predictions_full_text);
+
     info_hide();
   }
 }
 
 void predictions_window_disappear() {
   // free_sections_and_items_arrays();
-  free(s_directions);
+  for(int i = 0; i < s_displayable_items_count; i++) {
+    free(s_displayable_items[i].text);
+  }
 }
 
 static char* strdup(const char* str)
