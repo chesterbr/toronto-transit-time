@@ -2,7 +2,6 @@ TODO
 
 (this is my internal tasks control; we're ready to publish when there is nothing else here)
 
-- Store all info from prediction messages in arrays
 - Ensure prediction is not leaking memory (it will be called multiple times)
 - Build scrollable textlayer with predictions
 - Devise a way to refresh the times

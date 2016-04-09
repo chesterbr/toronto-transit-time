@@ -199,10 +199,11 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
     dict_write_int(out_iter, KEY_MENU_SELECTED_ITEM, &cell_index->row, sizeof(cell_index->row), false);
     result = app_message_outbox_send();
     if (result != APP_MSG_OK) {
+      info_show("ERROR SENDING DATA TO PHONE");
       APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int)result);
     }
   } else {
-    // The outbox cannot be used right now
+    info_show("ERROR TALKING TO PHONE");
     APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
   }
 }

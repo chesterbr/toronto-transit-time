@@ -71,11 +71,9 @@ function buildPredictionMessages() {
   var directions = values(predictions, 'direction');
   var ttcAlerts = values(predictions, 'message');
 
-  appendToMessage('prediction_direction_count', Math.max(directions.length, 1));
-  appendToMessage('prediction_ttc_alert_count', ttcAlerts.length);
-
   if (directions.length == 0) {
     appendToMessage('prediction_title', predictions.dirTitleBecauseNoPredictions);
+    console.log(predictions.dirTitleBecauseNoPredictions);
   } else {
     directions.forEach(function(direction) {
       appendToMessage('prediction_title', direction.title);
