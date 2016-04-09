@@ -2,11 +2,16 @@ TODO
 
 (this is my internal tasks control; we're ready to publish when there is nothing else here)
 
-- Ensure prediction is not leaking memory (it will be called multiple times)
-- Build scrollable textlayer with predictions
-- Devise a way to refresh the times
+- Improve buffer (snprintf)
+- Convert times > 59s to minutes
+- Ensure negative ones print "due"
+- auto-refresh every x seconds
+- exit predictions screen after y seconds (avoid battery drain)
+- Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
+- Auto-adjust scroll window height (this may be tricky)
 
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
+- Avoid crash when you enter/exit too fast
 
 - Upon proper events ("Finding you...", "Finding stops around you...", "Error", call info_message)
 
