@@ -37,6 +37,7 @@ static void ensure_layer_initialized() {
   s_info_bounds = layer_get_bounds(window_layer);
 
   s_info_layer = layer_create(s_info_bounds);
+  layer_set_update_proc(s_info_layer, fill_background);
 
   s_info_message_layer = text_layer_create(
     GRect(s_info_bounds.origin.x, s_info_bounds.size.h * 0.75,
