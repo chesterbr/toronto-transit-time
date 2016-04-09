@@ -19,13 +19,13 @@ static void fill_background(Layer *layer, GContext *ctx);
 void info_show(char* message) {
   ensure_layer_initialized();
   text_layer_set_text(s_info_message_layer, message);
-  //  s_info_message = message;
-
+  layer_set_hidden(s_info_layer, false);
   move_layer_to_top();
 }
 
 void info_hide() {
   layer_remove_from_parent(s_info_layer);
+  layer_set_hidden(s_info_layer, true);
 }
 
 ///
@@ -37,7 +37,6 @@ static void ensure_layer_initialized() {
   s_info_bounds = layer_get_bounds(window_layer);
 
   s_info_layer = layer_create(s_info_bounds);
-  layer_set_update_proc(s_info_layer, fill_background);
 
   s_info_message_layer = text_layer_create(
     GRect(s_info_bounds.origin.x, s_info_bounds.size.h * 0.75,
@@ -69,7 +68,6 @@ static void fill_background(Layer *layer, GContext *ctx) {
   graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_rect(ctx, s_info_bounds, 0, GCornerNone);
   APP_LOG(APP_LOG_LEVEL_INFO, "fill");
-
 }
 
 
