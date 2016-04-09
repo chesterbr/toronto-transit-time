@@ -90,29 +90,15 @@ void predictions_window_make_visible(int mode) {
     // ensure we got the layer initialized and loaded with data
     char* pos = s_predictions_full_text;
     for(int i = 0; i < s_displayable_items_count; i++) {
-      APP_LOG(APP_LOG_LEVEL_INFO, "i = %d\n", i);
-      APP_LOG(APP_LOG_LEVEL_INFO, "snprintf pos = %d len=%d",(int) pos, strlen(s_predictions_full_text));
       DisplayableItem item = s_displayable_items[i];
       int n = snprintf(pos, 4000, "%s\n", item.text);
       pos += n;
-      APP_LOG(APP_LOG_LEVEL_INFO, "snprintf pos = %d len=%d",(int) pos, strlen(s_predictions_full_text));
       for (int j = 0; j < item.times_count; j++) {
         pos += snprintf(pos, 4000, "%ds /", item.times[j]);
-        APP_LOG(APP_LOG_LEVEL_INFO, "snprintf pos = %d len=%d",(int) pos, strlen(s_predictions_full_text));
       }
       pos += snprintf(pos, 4000, "\n\n");
-      APP_LOG(APP_LOG_LEVEL_INFO, "snprintf pos = %d len=%d",(int) pos, strlen(s_predictions_full_text));
-      APP_LOG(APP_LOG_LEVEL_INFO, "i at the end = %d\n", i);
-      APP_LOG(APP_LOG_LEVEL_INFO, "count now = %d\n", s_displayable_items_count);
-      APP_LOG(APP_LOG_LEVEL_INFO, "text now = %s\n", item.text);
     }
-
-    APP_LOG(APP_LOG_LEVEL_INFO, "snprintf full_text = %d\n", (int)s_predictions_full_text);
-
-    APP_LOG(APP_LOG_LEVEL_INFO, "%s", s_predictions_full_text);
-
     text_layer_set_text(s_text_layer, s_predictions_full_text);
-
     info_hide();
   }
 }
