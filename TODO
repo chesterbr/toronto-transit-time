@@ -2,10 +2,9 @@ TODO
 
 (this is my internal tasks control; we're ready to publish when there is nothing else here)
 
-- Convert times > 59s to minutes
-- Ensure negative ones print "due"
 - auto-refresh (web) every x seconds
 - exit predictions screen after y seconds (avoid battery drain)
+- Figure out space on right side of predictions
 - Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
 - Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
 

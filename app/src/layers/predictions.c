@@ -44,7 +44,15 @@ static void update_contents(DisplayableItem *items, int count) {
     text_append_str("\n");
     for (int j = 0; j < items[i].times_count; j++) {
       text_append_str(j == 0 ? "\n" : " / ");
-      text_append_number(items[i].times[j]);
+      if (items[i].times[j] >= 60) {
+        text_append_number(items[i].times[j] / 60);
+        text_append_str("min");
+      } else if (items[i].times[j] >= 0) {
+        text_append_number(items[i].times[j]);
+        text_append_str("s");
+      } else {
+        text_append_str("DUE");
+      }
       items[i].times[j]--;
     }
     text_append_str("\n\n");
