@@ -30,9 +30,12 @@ void predictions_layer_init(Window *window) {
   scroll_layer_add_child(s_scroll_layer, text_layer_get_layer(s_text_layer));
 }
 
-void predictions_layer_update(DisplayableItem *items, int count) {
+void predictions_layer_update(DisplayableItem *items, int count, bool reset_scroll) {
   update_contents(items, count);
-  update_scroll_bounds();
+  if (reset_scroll) {
+    update_scroll_bounds();
+    scroll_layer_set_content_offset(s_scroll_layer, GPointZero, false);
+  }
 }
 
 // Private

@@ -1,23 +1,23 @@
-internet = require('internet'); // Communication with back-ends
-watch    = require('watch');    // Communication with watch
-geo      = require('geo');      // Geolocation
+Internet = require('internet'); // Communication with back-ends
+Watch    = require('watch');    // Communication with watch
+Geo      = require('geo');      // Geolocation
 
 function openRoutesList(e) {
-  geo.getLocation(function(loc) {
-    internet.getRoutes(loc.coords.latitude, loc.coords.longitude,
-      watch.sendRoutes
+  Geo.getLocation(function(loc) {
+    Internet.getRoutes(43.6456030,  -79.3897140,  //loc.coords.latitude, loc.coords.longitude,
+      Watch.sendRoutes
     );
   });
 }
 
 function openPredictions(uri) {
-  internet.getPredictions(uri,
-    watch.sendPredictions
+  Internet.getPredictions(uri,
+    Watch.sendPredictions
   );
 }
 
-watch.addEventListener('ready', openRoutesList);
-watch.addEventListener('route_selected', openPredictions);
+Watch.addEventListener('ready', openRoutesList);
+Watch.addEventListener('route_selected', openPredictions);
 
 
 

@@ -1,4 +1,4 @@
-### pebble-ttc
+### Toronto Transit for Pebble
 
 WORK IN PROGRESS
 

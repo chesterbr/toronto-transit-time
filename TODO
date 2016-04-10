@@ -3,13 +3,13 @@ TODO
 (this is my internal tasks control; we're ready to publish when there is nothing else here)
 
 - BUG: crashes on watch after a few predictions
-- BUG: messages persist upon selection change (fix: on predictions window showing (or hiding), erase old predictions/times/messages)
 - auto-refresh (web) every x seconds
 - exit predictions screen after y seconds (avoid battery drain)
 - Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
 - Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
 
 - Rename the app: https://developer.pebble.com/legal/pebble-trademark/
+
 
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
 - Avoid crash when you enter/exit too fast (is it still happening? on real hardware?)
@@ -19,6 +19,7 @@ TODO
 - Improve menu listing on Chalk (see the reduction of width on top/bottom can be done; consider not showing the current time; see contentindicator https://developer.pebble.com/guides/design-and-interaction/in-the-round/)
 - Consider custom fonts
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
+- Convert icon to 1-bit, transparent
 
 - Improve back-end radius (make a smaller initial search, then double until a stop is found, until a limit)
 

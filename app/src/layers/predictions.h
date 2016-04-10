@@ -10,4 +10,4 @@ typedef struct {
 } DisplayableItem;
 
 void predictions_layer_init(Window *window);
-void predictions_layer_update(DisplayableItem *items, int count);
+void predictions_layer_update(DisplayableItem *items, int count, bool reset_scroll);
