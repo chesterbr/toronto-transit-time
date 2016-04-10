@@ -61,10 +61,9 @@ static void update_contents(DisplayableItem *items, int count) {
 }
 
 static void update_scroll_bounds() {
-  GSize content_size = text_layer_get_content_size(s_text_layer);
-  content_size.h = 5000;
-  text_layer_set_size(s_text_layer, content_size);
-  scroll_layer_set_content_size(s_scroll_layer, GSize(s_bounds.size.w, content_size.h));
+  int content_size = 5000;
+  text_layer_set_size(s_text_layer, GSize(s_bounds.size.w, content_size));
+  scroll_layer_set_content_size(s_scroll_layer, GSize(s_bounds.size.w, content_size));
 }
 
 static void text_reset() {

@@ -2,7 +2,7 @@ TODO
 
 (this is my internal tasks control; we're ready to publish when there is nothing else here)
 
-- BUG: space on right side of predictions is increasing!
+- BUG: crashes on watch after a few predictions
 - BUG: messages persist upon selection change (fix: on predictions window showing (or hiding), erase old predictions/times/messages)
 - auto-refresh (web) every x seconds
 - exit predictions screen after y seconds (avoid battery drain)
