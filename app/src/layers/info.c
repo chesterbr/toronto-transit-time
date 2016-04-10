@@ -28,7 +28,7 @@ void info_hide() {
   layer_set_hidden(s_info_layer, true);
 }
 
-///
+/// Private
 
 static void ensure_layer_initialized() {
   if (s_info_layer) { return; }

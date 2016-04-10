@@ -1,5 +1,6 @@
 #include "predictions.h"
 #include "../layers/info.h"
+#include "../layers/predictions.h"
 #include <pebble.h>
 #include <stdio.h>
 
@@ -16,24 +17,12 @@ enum {
 };
 
 static Window *s_predictions_window;
-static TextLayer *s_text_layer;
-static ScrollLayer *s_scroll_layer;
-static GRect s_bounds;
-
-typedef struct {
-  char* text;
-  bool is_prediction;
-  int times_count;
-  int times[5];
-} DisplayableItem;
 
 static DisplayableItem s_displayable_items[10];
 static int s_displayable_items_count;
-static char s_predictions_full_text[4000];
 
 static char* strdup(const char* str);
 static void predictions_window_disappear();
-static void update_predictions_layer_contents();
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed);
 
 void predictions_window_inbox_received(DictionaryIterator *iterator, void *context) {
@@ -73,21 +62,7 @@ void predictions_window_make_visible(int mode) {
     window_set_window_handlers(s_predictions_window, (WindowHandlers) {
       .disappear = predictions_window_disappear,
     });
-
-    Layer *window_layer = window_get_root_layer(s_predictions_window);
-    s_bounds = layer_get_bounds(window_layer);
-
-    s_scroll_layer = scroll_layer_create(s_bounds);
-    scroll_layer_set_click_config_onto_window(s_scroll_layer, s_predictions_window);
-    layer_add_child(window_layer, scroll_layer_get_layer(s_scroll_layer));
-
-    s_text_layer = text_layer_create(PBL_IF_ROUND_ELSE(
-      grect_inset(s_bounds, GEdgeInsets(20, 0, 0, 0)),
-      s_bounds));
-    text_layer_set_text(s_text_layer, "Ready.");
-    text_layer_set_text_alignment(s_text_layer, GTextAlignmentCenter);
-    scroll_layer_add_child(s_scroll_layer, text_layer_get_layer(s_text_layer));
-
+    predictions_layer_init(s_predictions_window);
   }
   if (window_stack_get_top_window() != s_predictions_window) {
     window_stack_push(s_predictions_window, true);
@@ -96,31 +71,8 @@ void predictions_window_make_visible(int mode) {
     s_displayable_items_count = -1;
     info_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
-    // ensure we got the layer initialized and loaded with data
-    update_predictions_layer_contents();
-    text_layer_set_text(s_text_layer, s_predictions_full_text);
-
-    GSize content_size = text_layer_get_content_size(s_text_layer);
-    content_size.h = 5000;
-    text_layer_set_size(s_text_layer, content_size);
-    scroll_layer_set_content_size(s_scroll_layer, GSize(s_bounds.size.w, content_size.h));
-
+    predictions_layer_update(s_displayable_items, s_displayable_items_count);
     info_hide();
-  }
-}
-
-// Private
-
-static void update_predictions_layer_contents() {
-    char* pos = s_predictions_full_text;
-  for(int i = 0; i < s_displayable_items_count; i++) {
-    int n = snprintf(pos, 4000, "%s\n", s_displayable_items[i].text);
-    pos += n;
-    for (int j = 0; j < s_displayable_items[i].times_count; j++) {
-      pos += snprintf(pos, 4000, "%ds /", s_displayable_items[i].times[j]);
-      s_displayable_items[i].times[j] -= 1;
-    }
-    pos += snprintf(pos, 4000, "\n\n");
   }
 }
 
@@ -132,7 +84,7 @@ static void predictions_window_disappear() {
 }
 
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
-  update_predictions_layer_contents();
+  predictions_layer_update(s_displayable_items, s_displayable_items_count);
   layer_mark_dirty(window_get_root_layer(s_predictions_window));
 }
 
