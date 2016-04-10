@@ -2,9 +2,10 @@ TODO
 
 (this is my internal tasks control; we're ready to publish when there is nothing else here)
 
+- BUG: space on right side of predictions is increasing!
+- BUG: messages persist upon selection change (fix: on predictions window showing (or hiding), erase old predictions/times/messages)
 - auto-refresh (web) every x seconds
 - exit predictions screen after y seconds (avoid battery drain)
-- Figure out space on right side of predictions
 - Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
 - Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
 
@@ -16,9 +17,7 @@ TODO
 - Upon proper events ("Finding you...", "Finding stops around you...", "Error", call info_message)
 
 - Improve menu listing on Chalk (see the reduction of width on top/bottom can be done; consider not showing the current time; see contentindicator https://developer.pebble.com/guides/design-and-interaction/in-the-round/)
-
 - Consider custom fonts
-
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
 
 - Improve back-end radius (make a smaller initial search, then double until a stop is found, until a limit)

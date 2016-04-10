@@ -1,5 +1,7 @@
 // Asynchronous communication with Pebble
 
+const MAX_TIMES_FOR_DIRECITON = 3;
+
 var stopsAndRoutes;
 var routeSelectedCallback;
 
@@ -78,7 +80,7 @@ function buildPredictionMessages() {
     directions.forEach(function(direction) {
       appendToMessage('prediction_title', direction.title);
       var times = values(direction, 'prediction');
-      times.forEach(function(time) {
+      times.slice(0, MAX_TIMES_FOR_DIRECITON).forEach(function(time) {
         appendToMessage('prediction_seconds', parseInt(time.seconds));
       });
       enqueueMessage();
