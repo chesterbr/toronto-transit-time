@@ -40,8 +40,14 @@ void predictions_layer_update(DisplayableItem *items, int count) {
 static void update_contents(DisplayableItem *items, int count) {
   text_reset();
   for(int i = 0; i < count; i++) {
+    if (i > 0) {
+      text_append_str("\n_________\n\n");
+    }
     text_append_str(items[i].text);
     text_append_str("\n");
+    if (items[i].times_count == 0 && items[i].is_prediction) {
+      text_append_str("\nNo predictions");
+    }
     for (int j = 0; j < items[i].times_count; j++) {
       text_append_str(j == 0 ? "\n" : " / ");
       if (items[i].times[j] >= 60) {
@@ -55,7 +61,6 @@ static void update_contents(DisplayableItem *items, int count) {
       }
       items[i].times[j]--;
     }
-    text_append_str("\n\n");
   }
   text_layer_set_text(s_text_layer, s_predictions_full_text);
 }
