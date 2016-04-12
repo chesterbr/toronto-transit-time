@@ -10,6 +10,20 @@ enum {
 static int s_last_predictions_section;
 static int s_last_predictions_row;
 
+static void inbox_received_callback(DictionaryIterator *iterator, void *context);
+static void inbox_dropped_callback(AppMessageResult reason, void *context);
+static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context);
+
+void bluetooth_initialize(AppMessageInboxReceived received_callback) {
+  app_message_register_inbox_received(received_callback);
+  app_message_register_inbox_dropped(inbox_dropped_callback);
+  app_message_register_outbox_failed(outbox_failed_callback);
+
+  const int inbox_size = 1024;
+  const int outbox_size = 1024;
+  app_message_open(inbox_size, outbox_size);
+}
+
 void bluetooth_request_predictions(int section, int row) {
   DictionaryIterator *out_iter;
   AppMessageResult result = app_message_outbox_begin(&out_iter);
@@ -31,4 +45,14 @@ void bluetooth_request_predictions(int section, int row) {
 
 void bluetooth_refresh_predictions() {
   bluetooth_request_predictions(s_last_predictions_section, s_last_predictions_row);
+}
+
+// Private
+
+static void inbox_dropped_callback(AppMessageResult reason, void *context) {
+  info_show("ERROR TALKING TO PHONE (DROPPED)");
+}
+
+static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
+  info_show("ERROR TALKING TO PHONE (OUTBOX)");
 }

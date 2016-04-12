@@ -11,7 +11,6 @@ FEATURES:
 TECH DEBT (app):
 - use our own struct instead of simplemenu's
 - split routes_list window and layer code
-- move bluetooth handling stuff from main module to bluetooth.c
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
 - Improve module names (particularly bad ones are "info", "pebble-ttc.c")
 - Remove messages not used (prediction counts seem the case); renumber to reflect bluetooth split
