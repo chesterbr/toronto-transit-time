@@ -1,8 +1,11 @@
 #include "predictions.h"
 #include "../layers/info.h"
 #include "../layers/predictions.h"
+#include "../modules/bluetooth.h"
 #include <pebble.h>
 #include <stdio.h>
+
+const int SECONDS_BETWEEN_PREDICTION_REFRESHES = 15;
 
 enum {
   // Inbound message keys
@@ -20,6 +23,7 @@ static Window *s_predictions_window;
 
 static DisplayableItem s_displayable_items[10];
 static int s_displayable_items_count;
+static int s_seconds_until_refresh;
 
 static char* strdup(const char* str);
 static void predictions_window_disappear();
@@ -49,6 +53,7 @@ void predictions_window_inbox_received(DictionaryIterator *iterator, void *conte
         break;
       case KEY_PREDICTION_SHOW:
         s_displayable_items_count++;
+        s_seconds_until_refresh = SECONDS_BETWEEN_PREDICTION_REFRESHES;
         predictions_window_make_visible(PRED_MODE_PREDICTIONS);
         tick_timer_service_subscribe(SECOND_UNIT, update_prediction_times);
         break;
@@ -84,8 +89,14 @@ static void predictions_window_disappear() {
 }
 
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
-  predictions_layer_update(s_displayable_items, s_displayable_items_count, false);
-  layer_mark_dirty(window_get_root_layer(s_predictions_window));
+  if (--s_seconds_until_refresh > 0) {
+    predictions_layer_update(s_displayable_items, s_displayable_items_count, false);
+    layer_mark_dirty(window_get_root_layer(s_predictions_window));
+  } else {
+    s_displayable_items_count = -1;
+    info_show("REFRESHING...");
+    bluetooth_refresh_predictions();
+  }
 }
 
 static char* strdup(const char* str)

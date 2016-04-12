@@ -2,14 +2,11 @@ TODO
 
 (this is my internal tasks control; we're ready to publish when there is nothing else here)
 
-- BUG: crashes on watch after a few predictions
 - auto-refresh (web) every x seconds
 - exit predictions screen after y seconds (avoid battery drain)
 - Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
 - Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
-
-- Rename the app: https://developer.pebble.com/legal/pebble-trademark/
-
+- Display clock on predictions screen
 
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
 - Avoid crash when you enter/exit too fast (is it still happening? on real hardware?)

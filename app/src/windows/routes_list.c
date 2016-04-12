@@ -2,6 +2,7 @@
 #include "predictions.h"
 #include "../layers/info.h"
 #include "../modules/string_buffer.h"
+#include "../modules/bluetooth.h"
 #include <pebble.h>
 
 static void initialize_menu_layer();
@@ -15,7 +16,6 @@ static void menu_select_callback();
 static void free_sections_and_items_arrays();
 
 enum {
-  // Inbound message keys
   KEY_MENU_SECTION_COUNT       = 100,
   KEY_MENU_STRING_BUFFER_SIZE  = 101,
   KEY_MENU_SECTION_ITEMS_COUNT = 102,
@@ -41,10 +41,6 @@ enum {
   KEY_MENU_ITEM_TITLE_10       = 122,
   KEY_MENU_ITEM_SUBTITLE_10    = 123,
   KEY_MENU_SHOW                = 124,
-
-  // Outbound message keys
-  KEY_MENU_SELECTED_SECTION    = 125,
-  KEY_MENU_SELECTED_ITEM       = 126,
 };
 
 static Window *s_routes_list_window;
@@ -67,9 +63,7 @@ static SimpleMenuItem *s_menu_current_section_items;
 void routes_list_init() {
   s_routes_list_window = window_create();
   window_stack_push(s_routes_list_window, true);
-
   initialize_menu_layer();
-
   info_show("LOADING...");
 }
 
@@ -189,23 +183,8 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
-   // s_first_menu_items[index].subtitle = "You've hit select here!";
-  // layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
   predictions_window_make_visible(PRED_MODE_LOADING);
-  DictionaryIterator *out_iter;
-  AppMessageResult result = app_message_outbox_begin(&out_iter);
-  if (result == APP_MSG_OK) {
-    dict_write_int(out_iter, KEY_MENU_SELECTED_SECTION, &cell_index->section, sizeof(cell_index->section), false);
-    dict_write_int(out_iter, KEY_MENU_SELECTED_ITEM, &cell_index->row, sizeof(cell_index->row), false);
-    result = app_message_outbox_send();
-    if (result != APP_MSG_OK) {
-      info_show("ERROR SENDING DATA TO PHONE");
-      APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int)result);
-    }
-  } else {
-    info_show("ERROR TALKING TO PHONE");
-    APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
-  }
+  bluetooth_request_predictions(cell_index->section, cell_index->row);
 }
 
 static void show_list() {

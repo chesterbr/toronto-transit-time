@@ -2,7 +2,7 @@
   "uuid": "9da6e6ff-182e-4a1f-ade5-914b53aec7aa",
   "shortName": "TO Transit",
   "longName": "Toronto Transit",
-  "companyName": "MakeAwesomeHappen",
+  "companyName": "@chesterbr",
   "versionLabel": "1.0",
   "sdkVersion": "3",
   "targetPlatforms": ["aplite", "basalt", "chalk"],
