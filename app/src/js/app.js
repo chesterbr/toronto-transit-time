@@ -4,7 +4,7 @@ Geo      = require('geo');      // Geolocation
 
 function openRoutesList(e) {
   Geo.getLocation(function(loc) {
-    Internet.getRoutes(43.6456030,  -79.3897140,  //loc.coords.latitude, loc.coords.longitude,
+    Internet.getRoutes(loc.coords.latitude, loc.coords.longitude,
       Watch.sendRoutes
     );
   });

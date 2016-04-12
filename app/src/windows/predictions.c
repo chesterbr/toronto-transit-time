@@ -92,7 +92,6 @@ static void predictions_window_disappear() {
 }
 
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
-  APP_LOG(APP_LOG_LEVEL_INFO, "tick %d %d", s_seconds_until_exit, s_seconds_until_refresh);
   if (--s_seconds_until_exit == 0) {
     window_stack_pop(true);
   } else if (--s_seconds_until_refresh > 0) {
