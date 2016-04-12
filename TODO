@@ -2,23 +2,34 @@ TODO
 
 (this is my internal tasks control; we're ready to publish when there is nothing else here)
 
+FEATURES:
+- Display clock on predictions screen
 - Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
 - Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
-- Display clock on predictions screen
-
-- Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
-- Avoid crash when you enter/exit too fast (is it still happening? on real hardware?)
-
 - Upon proper events ("Finding you...", "Finding stops around you...", "Error", call info_message)
 
+TECH DEBT (app):
+- use our own struct instead of simplemenu's
+- split routes_list window and layer code
+- move bluetooth handling stuff from main module to bluetooth.c
+- Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
+- Improve module names (particularly bad ones are "info", "pebble-ttc.c")
+- Remove messages not used (prediction counts seem the case); renumber to reflect bluetooth split
+
+TECH DEBT (server):
+- Improve back-end radius (make a smaller initial search, then double until a stop is found, until a limit)
+- Why u no tests?
+
+BUGS:
+- Avoid crash when you enter/exit too fast (is it still happening? on real hardware?)
+- why first call of menu keeps calling the loading screen layer's "fill"?
+
+IMPROVEMENTS:
 - Improve menu listing on Chalk (see the reduction of width on top/bottom can be done; consider not showing the current time; see contentindicator https://developer.pebble.com/guides/design-and-interaction/in-the-round/)
 - Consider custom fonts
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
 - Convert icon to 1-bit, transparent
-
-- Improve back-end radius (make a smaller initial search, then double until a stop is found, until a limit)
-
-- Show error when no stops are found
+- Show error when no stops are found (e.g., not in Toronto)
 
 - Mention on docs:
   - http://www.watchface-generator.de/converter/
