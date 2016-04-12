@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 const int SECONDS_BETWEEN_PREDICTION_REFRESHES = 15;
+const int SECONDS_BEFORE_EXITING_PREDICTIONS_SCREEN = 120;
 
 enum {
   // Inbound message keys
@@ -24,6 +25,7 @@ static Window *s_predictions_window;
 static DisplayableItem s_displayable_items[10];
 static int s_displayable_items_count;
 static int s_seconds_until_refresh;
+static int s_seconds_until_exit;
 
 static char* strdup(const char* str);
 static void predictions_window_disappear();
@@ -74,6 +76,7 @@ void predictions_window_make_visible(int mode) {
   }
   if (mode == PRED_MODE_LOADING) {
     s_displayable_items_count = -1;
+    s_seconds_until_exit = SECONDS_BEFORE_EXITING_PREDICTIONS_SCREEN;
     info_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
     predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
@@ -89,7 +92,10 @@ static void predictions_window_disappear() {
 }
 
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
-  if (--s_seconds_until_refresh > 0) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "tick %d %d", s_seconds_until_exit, s_seconds_until_refresh);
+  if (--s_seconds_until_exit == 0) {
+    window_stack_pop(true);
+  } else if (--s_seconds_until_refresh > 0) {
     predictions_layer_update(s_displayable_items, s_displayable_items_count, false);
     layer_mark_dirty(window_get_root_layer(s_predictions_window));
   } else {
