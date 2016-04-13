@@ -12,7 +12,7 @@ char* string_buffer_init(int size) {
   );
 }
 
-void string_buffer_deinit() {
+void string_buffer_deinit(void) {
   free(s_menu_string_buffer);
 }
 

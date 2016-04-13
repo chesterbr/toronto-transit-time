@@ -4,8 +4,8 @@
 #include "layers/info.h"
 #include "modules/bluetooth.h"
 
-static void app_init();
-static void app_deinit();
+static void app_init(void);
+static void app_deinit(void);
 void inbox_received_callback(DictionaryIterator *iterator, void *context);
 
 int main(void) {
@@ -16,12 +16,12 @@ int main(void) {
   return 0;
 }
 
-static void app_init() {
+static void app_init(void) {
   bluetooth_initialize(inbox_received_callback);
   routes_list_init();
 }
 
-static void app_deinit() {
+static void app_deinit(void) {
   routes_list_deinit();
 }
 

@@ -43,7 +43,7 @@ void bluetooth_request_predictions(int section, int row) {
   }
 }
 
-void bluetooth_refresh_predictions() {
+void bluetooth_refresh_predictions(void) {
   bluetooth_request_predictions(s_last_predictions_section, s_last_predictions_row);
 }
 

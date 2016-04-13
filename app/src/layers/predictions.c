@@ -9,8 +9,8 @@ static char* s_buffer_pos;
 static int s_buffer_size;
 
 static void update_contents(DisplayableItem items[], int count);
-static void update_scroll_bounds();
-static void text_reset();
+static void update_scroll_bounds(void);
+static void text_reset(void);
 static void text_append_number(int number);
 static void text_append_str(char* text);
 static void text_append(char* text, int number);
@@ -68,13 +68,13 @@ static void update_contents(DisplayableItem *items, int count) {
   text_layer_set_text(s_text_layer, s_predictions_full_text);
 }
 
-static void update_scroll_bounds() {
+static void update_scroll_bounds(void) {
   int content_size = 5000;
   text_layer_set_size(s_text_layer, GSize(s_bounds.size.w, content_size));
   scroll_layer_set_content_size(s_scroll_layer, GSize(s_bounds.size.w, content_size));
 }
 
-static void text_reset() {
+static void text_reset(void) {
   s_buffer_size = 4000;
   s_buffer_pos = s_predictions_full_text;
 }

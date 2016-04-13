@@ -12,8 +12,8 @@ char *s_info_message;
 
 static GRect s_info_bounds; // This will likely move
 
-static void ensure_layer_initialized();
-static void move_layer_to_top();
+static void ensure_layer_initialized(void);
+static void move_layer_to_top(void);
 static void fill_background(Layer *layer, GContext *ctx);
 
 void info_show(char* message) {
@@ -23,14 +23,14 @@ void info_show(char* message) {
   move_layer_to_top();
 }
 
-void info_hide() {
+void info_hide(void) {
   layer_remove_from_parent(s_info_layer);
   layer_set_hidden(s_info_layer, true);
 }
 
 /// Private
 
-static void ensure_layer_initialized() {
+static void ensure_layer_initialized(void) {
   if (s_info_layer) { return; }
 
   Layer *window_layer = window_get_root_layer(window_stack_get_top_window());
@@ -59,7 +59,7 @@ static void ensure_layer_initialized() {
   layer_add_child(s_info_layer, bitmap_layer_get_layer(s_info_streetcar_layer));
 }
 
-static void move_layer_to_top() {
+static void move_layer_to_top(void) {
   Layer *root_layer = window_get_root_layer(window_stack_get_top_window());
   layer_remove_from_parent(s_info_layer);
   layer_add_child(root_layer, s_info_layer);

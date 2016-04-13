@@ -28,7 +28,7 @@ static int s_seconds_until_refresh;
 static int s_seconds_until_exit;
 
 static char* strdup(const char* str);
-static void predictions_window_disappear();
+static void predictions_window_disappear(struct Window *window);
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed);
 
 void predictions_window_inbox_received(DictionaryIterator *iterator, void *context) {
@@ -84,7 +84,7 @@ void predictions_window_make_visible(int mode) {
   }
 }
 
-static void predictions_window_disappear() {
+static void predictions_window_disappear(struct Window *window) {
   tick_timer_service_unsubscribe();
   for(int i = 0; i < s_displayable_items_count; i++) {
     free(s_displayable_items[i].text);

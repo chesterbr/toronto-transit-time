@@ -5,15 +5,15 @@
 #include "../modules/bluetooth.h"
 #include <pebble.h>
 
-static void initialize_menu_layer();
+static void initialize_menu_layer(void);
 static void initialize_sections_array(int section_count);
 static void initialize_session_struct_and_items_array(int items_count);
 static void save_current_section_title(char * title);
 static void save_current_item_title(char* title);
 static void build_menu_item_using_title_and_subtitle(char* subtitle);
-static void show_list();
-static void menu_select_callback();
-static void free_sections_and_items_arrays();
+static void show_list(void);
+static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data);
+static void free_sections_and_items_arrays(void);
 
 enum {
   KEY_MENU_SECTION_COUNT       = 100,
@@ -60,14 +60,14 @@ static int s_menu_current_item_index;
 static char* s_menu_current_item_title;
 static SimpleMenuItem *s_menu_current_section_items;
 
-void routes_list_init() {
+void routes_list_init(void) {
   s_routes_list_window = window_create();
   window_stack_push(s_routes_list_window, true);
   initialize_menu_layer();
   info_show("LOADING...");
 }
 
-void routes_list_deinit() {
+void routes_list_deinit(void) {
   menu_layer_destroy(s_menu_layer);
   free_sections_and_items_arrays();
   string_buffer_deinit();
@@ -154,8 +154,7 @@ static void save_current_item_title(char* title) {
 static void build_menu_item_using_title_and_subtitle(char* subtitle) {
   s_menu_current_section_items[s_menu_current_item_index] = (SimpleMenuItem) {
     .title = s_menu_current_item_title,
-    .subtitle = string_buffer_store(subtitle),
-    .callback = menu_select_callback
+    .subtitle = string_buffer_store(subtitle)
   };
   s_menu_current_item_index++;
 }
@@ -187,7 +186,7 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
   bluetooth_request_predictions(cell_index->section, cell_index->row);
 }
 
-static void show_list() {
+static void show_list(void) {
   Layer *window_layer = window_get_root_layer(s_routes_list_window);
   GRect bounds = layer_get_frame(window_layer);
   bounds.origin.y += STATUS_BAR_LAYER_HEIGHT;
@@ -210,11 +209,11 @@ static void show_list() {
 }
 
 
-static void initialize_menu_layer() {
+static void initialize_menu_layer(void) {
 
 }
 
-static void free_sections_and_items_arrays() {
+static void free_sections_and_items_arrays(void) {
   for (int i = 0; i < s_menu_sections_count; i++) {
     free((void *)s_menu_sections[i].items);
   }
