@@ -6,13 +6,14 @@ FEATURES:
 - Display clock on predictions screen
 - Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
 - Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
+- Consider if scroll should instead navigate to next item on menu (but then how do we scroll) and/or whether scroll should be paginated (maybe navigate to next once you go beyond last page)
 - Upon proper events ("Finding you...", "Finding stops around you...", "Error", call info_message)
 
 TECH DEBT (app):
 - use our own struct instead of simplemenu's
 - split routes_list window and layer code
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
-- Improve module names (particularly bad ones are "info", "pebble-ttc.c")
+- Improve module names (particularly bad ones like "info")
 - Remove messages not used (prediction counts seem the case); renumber to reflect bluetooth split
 
 TECH DEBT (server):
