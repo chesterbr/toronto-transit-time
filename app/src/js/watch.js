@@ -150,8 +150,8 @@ function dispatchMessages() {
 // Incoming message processing
 
 function processIncomingMessage(message) {
-  stop = message.payload.KEY_MENU_SELECTED_SECTION;
-  route = message.payload.KEY_MENU_SELECTED_ITEM;
+  stop = message.payload.KEY_REQUESTED_PREDICTION_SECTION;
+  route = message.payload.KEY_REQUESTED_PREDICTION_ITEM;
   if (typeof(stop) == "number") {
     routeSelectedCallback(stopsAndRoutes[stop].routes[route].uri);
   }

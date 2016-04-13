@@ -3,8 +3,8 @@
 #include <pebble.h>
 
 enum {
-  KEY_MENU_SELECTED_SECTION    = 125,
-  KEY_MENU_SELECTED_ITEM       = 126,
+  KEY_REQUESTED_PREDICTION_SECTION    = 300,
+  KEY_REQUESTED_PREDICTION_ITEM       = 301,
 };
 
 static int s_last_predictions_section;
@@ -28,8 +28,8 @@ void bluetooth_request_predictions(int section, int row) {
   DictionaryIterator *out_iter;
   AppMessageResult result = app_message_outbox_begin(&out_iter);
   if (result == APP_MSG_OK) {
-    dict_write_int(out_iter, KEY_MENU_SELECTED_SECTION, &section, sizeof(section), false);
-    dict_write_int(out_iter, KEY_MENU_SELECTED_ITEM, &row, sizeof(row), false);
+    dict_write_int(out_iter, KEY_REQUESTED_PREDICTION_SECTION, &section, sizeof(section), false);
+    dict_write_int(out_iter, KEY_REQUESTED_PREDICTION_ITEM, &row, sizeof(row), false);
     result = app_message_outbox_send();
     if (result != APP_MSG_OK) {
       info_show("ERROR SENDING DATA TO PHONE");

@@ -10,14 +10,12 @@ const int SECONDS_BEFORE_EXITING_PREDICTIONS_SCREEN = 120;
 
 enum {
   // Inbound message keys
-  KEY_PREDICTION_TITLE           = 202,
-  KEY_PREDICTION_SECONDS_1       = 203,
-  KEY_PREDICTION_SECONDS_2       = 204,
-  KEY_PREDICTION_SECONDS_3       = 205,
-  KEY_PREDICTION_SECONDS_4       = 206,
-  KEY_PREDICTION_SECONDS_5       = 207,
-  KEY_PREDICTION_TTC_ALERT       = 208,
-  KEY_PREDICTION_SHOW            = 209,
+  KEY_PREDICTION_TITLE           = 200,
+  KEY_PREDICTION_TTC_ALERT       = 201,
+  KEY_PREDICTION_SECONDS_1       = 202,
+  KEY_PREDICTION_SECONDS_2       = 203,
+  KEY_PREDICTION_SECONDS_3       = 204,
+  KEY_PREDICTION_SHOW            = 205,
 };
 
 static Window *s_predictions_window;
@@ -48,8 +46,6 @@ void predictions_window_inbox_received(DictionaryIterator *iterator, void *conte
       case KEY_PREDICTION_SECONDS_1:
       case KEY_PREDICTION_SECONDS_2:
       case KEY_PREDICTION_SECONDS_3:
-      case KEY_PREDICTION_SECONDS_4:
-      case KEY_PREDICTION_SECONDS_5:
         s_displayable_items[s_displayable_items_count].times[tuple->key-KEY_PREDICTION_SECONDS_1] = tuple->value->int32;
         s_displayable_items[s_displayable_items_count].times_count++;
         break;
