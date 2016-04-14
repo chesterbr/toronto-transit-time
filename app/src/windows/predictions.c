@@ -1,5 +1,5 @@
 #include "predictions.h"
-#include "../layers/info.h"
+#include "../layers/splash.h"
 #include "../layers/predictions.h"
 #include "../modules/bluetooth.h"
 #include <pebble.h>
@@ -73,10 +73,10 @@ void predictions_window_make_visible(int mode) {
   if (mode == PRED_MODE_LOADING) {
     s_displayable_items_count = -1;
     s_seconds_until_exit = SECONDS_BEFORE_EXITING_PREDICTIONS_SCREEN;
-    info_show("LOADING PREDICTIONS...");
+    splash_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
     predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
-    info_hide();
+    splash_hide();
   }
 }
 
@@ -95,7 +95,7 @@ static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
     layer_mark_dirty(window_get_root_layer(s_predictions_window));
   } else {
     s_displayable_items_count = -1;
-    info_show("REFRESHING...");
+    splash_show("REFRESHING...");
     bluetooth_refresh_predictions();
   }
 }

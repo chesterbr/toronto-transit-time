@@ -1,6 +1,6 @@
 #include "routes_list.h"
 #include "predictions.h"
-#include "../layers/info.h"
+#include "../layers/splash.h"
 #include "../modules/string_buffer.h"
 #include "../modules/bluetooth.h"
 #include <pebble.h>
@@ -64,7 +64,7 @@ void routes_list_init(void) {
   s_routes_list_window = window_create();
   window_stack_push(s_routes_list_window, true);
   initialize_menu_layer();
-  info_show("LOADING...");
+  splash_show("LOADING...");
 }
 
 void routes_list_deinit(void) {

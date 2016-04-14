@@ -16,7 +16,6 @@ TECH DEBT (app):
 - use our own struct instead of simplemenu's
 - split routes_list window and layer code
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/)
-- Improve module names (particularly bad ones like "info")
 
 TECH DEBT (server):
 - Improve back-end radius (make a smaller initial search, then double until a stop is found, until a limit)

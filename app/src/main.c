@@ -1,7 +1,7 @@
 #include <pebble.h>
 #include "windows/routes_list.h"
 #include "windows/predictions.h"
-#include "layers/info.h"
+#include "layers/splash.h"
 #include "modules/bluetooth.h"
 
 static void app_init(void);
