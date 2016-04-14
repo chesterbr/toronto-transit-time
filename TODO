@@ -30,7 +30,6 @@ IMPROVEMENTS:
 - Improve menu listing on Chalk (see the reduction of width on top/bottom can be done; consider not showing the current time; see contentindicator https://developer.pebble.com/guides/design-and-interaction/in-the-round/)
 - Consider custom fonts
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
-- Convert icon to transparent
 - Show error when no stops are found (e.g., not in Toronto)
 
 - Mention on docs:
