@@ -1,15 +1,14 @@
 TODO
 
-(this is my internal tasks control; we're ready to publish when there is nothing else here)
+(this is my internal tasks control; we're ready to publish when there is nothing on the FEATURES list, but the others should be ideally clean also)
 
 FEATURES:
 - Display clock on predictions screen
+- Include battery display (and other things like quiet time display) on clock
 - Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
 - Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
 - Consider if scroll should instead navigate to next item on menu (but then how do we scroll) and/or whether scroll should be paginated (maybe navigate to next once you go beyond last page)
-- Keep light on on predictions screen
-- Vibrate when loading prediction? maybe not
-- Options screen
+- Reset timeout counter when keys are pressed?
 
 TECH DEBT (app):
 - use our own struct instead of simplemenu's
@@ -21,7 +20,6 @@ TECH DEBT (server):
 - Why u no tests?
 
 BUGS:
-- Avoid crash when you enter/exit too fast (is it still happening? on real hardware?)
 - why first call of menu keeps calling the loading screen layer's "fill"?
 
 IMPROVEMENTS:
@@ -29,6 +27,9 @@ IMPROVEMENTS:
 - Consider custom fonts
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
 - Show error when no stops are found (e.g., not in Toronto)
+- Keep light on on predictions screen
+- Vibrate when loading prediction? maybe not
+- Options screen
 
 - Mention on docs:
   - http://www.watchface-generator.de/converter/
