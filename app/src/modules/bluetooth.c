@@ -31,13 +31,13 @@ void bluetooth_request_predictions(int section, int row) {
     dict_write_int(out_iter, KEY_REQUESTED_PREDICTION_ITEM, &row, sizeof(row), false);
     result = app_message_outbox_send();
     if (result != APP_MSG_OK) {
-      splash_show("ERROR SENDING DATA TO PHONE");
+      splash_show("CAN'T FIND PHONE. IS BLUETOOTH ON? \U0001F612");
       APP_LOG(APP_LOG_LEVEL_ERROR, "Error sending the outbox: %d", (int)result);
     }
     s_last_predictions_section = section;
     s_last_predictions_row = row;
   } else {
-    splash_show("ERROR TALKING TO PHONE");
+    splash_show("CAN'T FIND PHONE. IS BLUETOOTH ON? \U0001F613");
     APP_LOG(APP_LOG_LEVEL_ERROR, "Error preparing the outbox: %d", (int)result);
   }
 }
@@ -49,9 +49,9 @@ void bluetooth_refresh_predictions(void) {
 // Private
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
-  splash_show("ERROR TALKING TO PHONE (DROPPED)");
+  splash_show("CAN'T FIND PHONE. IS BLUETOOTH ON? \U0001F614");
 }
 
 static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
-  splash_show("ERROR TALKING TO PHONE (OUTBOX)");
+  splash_show("CAN'T FIND PHONE. IS BLUETOOTH ON? \U0001F616");
 }

@@ -48,7 +48,7 @@ void splash_layer_inbox_received(DictionaryIterator *iterator, void *context) {
       splash_show("CAN'T GET GPS POSITION \U0001F614");
       break;
     case SPLASH_TEXT_FINDING_STOPS:
-      splash_show("FINDING NEARBY STOPS...");
+      splash_show("LOADING NEARBY STOPS...");
       break;
     case SPLASH_TEXT_ERROR_STOPS:
       splash_show("CAN'T DOWNLOAD STOPS \U0001F614");
