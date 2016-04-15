@@ -72,7 +72,7 @@ void routes_window_deinit(void) {
   window_destroy(s_routes_list_window);
 }
 
-void routes_list_inbox_received(DictionaryIterator *iterator, void *context) {
+void routes_window_inbox_received(DictionaryIterator *iterator, void *context) {
   // To ensure all data structures are initialized before usage and to keep
   // track of the current section / item, keys must be processed in order
   for(int key = KEY_MENU_SECTION_COUNT; key <= KEY_MENU_SHOW; key++) {

@@ -1,6 +1,14 @@
-// Layer that shows information (and dubs as a splash screen)
-
 #include "splash.h"
+
+enum {
+  SPLASH_TEXT_FINDING_LOCATION  = 0,
+  SPLASH_TEXT_ERROR_LOCATION    = 1,
+  SPLASH_TEXT_FINDING_STOPS     = 2,
+  SPLASH_TEXT_ERROR_STOPS       = 3,
+  SPLASH_TEXT_ERROR_PREDICTIONS = 4
+};
+
+const int KEY_SPLASH_WITH_TEXT = 400;
 
 static Layer *s_splash_layer = NULL;
 static TextLayer *s_splash_message_layer;
@@ -25,6 +33,30 @@ void splash_show(char* message) {
 void splash_hide(void) {
   layer_remove_from_parent(s_splash_layer);
   layer_set_hidden(s_splash_layer, true);
+}
+
+void splash_layer_inbox_received(DictionaryIterator *iterator, void *context) {
+  Tuple *tuple = dict_find(iterator, KEY_SPLASH_WITH_TEXT);
+  if (tuple == NULL) {
+    return;
+  }
+  switch (tuple->value->int32) {
+    case SPLASH_TEXT_FINDING_LOCATION:
+      splash_show("FINDING WHERE YOU ARE...");
+      break;
+    case SPLASH_TEXT_ERROR_LOCATION:
+      splash_show("CAN'T GET GPS POSITION \U0001F614");
+      break;
+    case SPLASH_TEXT_FINDING_STOPS:
+      splash_show("FINDING NEARBY STOPS...");
+      break;
+    case SPLASH_TEXT_ERROR_STOPS:
+      splash_show("CAN'T DOWNLOAD STOPS \U0001F614");
+      break;
+    case SPLASH_TEXT_ERROR_PREDICTIONS:
+      splash_show("CAN'T DOWNLOAD TTC PREDICTIONS \U0001F614");
+      break;
+  }
 }
 
 /// Private

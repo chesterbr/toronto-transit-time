@@ -1,6 +1,6 @@
 // Asynchronous communication with Pebble
 
-const MAX_TIMES_FOR_DIRECITON = 3;
+var MAX_TIMES_FOR_DIRECITON = 3;
 
 var stopsAndRoutes;
 var routeSelectedCallback;
@@ -29,9 +29,26 @@ module.exports.addEventListener = addEventListener;
 module.exports.sendRoutes = sendRoutes;
 module.exports.sendPredictions = sendPredictions;
 
+// These codes match the ones on splash.c
+module.exports.displayTextFindingLocation  = function() { displayText(0) };
+module.exports.displayTextErrorLocation    = function() { displayText(1) };
+module.exports.displayTextFindingStops     = function() { displayText(2) };
+module.exports.displayTextErrorStops       = function() { displayText(3) };
+module.exports.displayTextErrorPredictions = function() { displayText(4) };
+
+// Incoming messages
+
 Pebble.addEventListener('appmessage', processIncomingMessage);
 
-// Stops and routes (menu)
+function processIncomingMessage(message) {
+  stop = message.payload.KEY_REQUESTED_PREDICTION_SECTION;
+  route = message.payload.KEY_REQUESTED_PREDICTION_ITEM;
+  if (typeof(stop) == "number") {
+    routeSelectedCallback(stopsAndRoutes[stop].routes[route].uri);
+  }
+}
+
+// Messages to routes window
 
 function buildMenuMessages() {
   appendToMessage('menu_section_count', stopsAndRoutes.length);
@@ -65,7 +82,7 @@ function calcBufferSizeForMenuStrings() {
   return size;
 }
 
-// Predictions (screen)
+// Messages to predictions window
 
 function buildPredictionMessages() {
   // A prediction for a stop/route can have any number of "direction"s (usually
@@ -75,7 +92,6 @@ function buildPredictionMessages() {
 
   if (directions.length == 0) {
     appendToMessage('prediction_title', predictions.dirTitleBecauseNoPredictions);
-    console.log(predictions.dirTitleBecauseNoPredictions);
   } else {
     directions.forEach(function(direction) {
       appendToMessage('prediction_title', direction.title);
@@ -106,7 +122,15 @@ function values(obj, tagName) {
   });
 }
 
-// Outgoing message queuing/dispatching (for all screens)
+// Messages to splash layer
+
+function displayText(textKey) {
+  appendToMessage('splash_with_text', textKey);
+  enqueueMessage();
+  dispatchMessages();
+}
+
+// Outgoing message queuing/dispatching (for all windows/layers)
 
 var MAX_ITEMS_PER_MESSAGE = 10;
 
@@ -144,15 +168,5 @@ function dispatchMessages() {
     }, function(e) {
       console.log('Error sending message to Pebble!' + JSON.stringify(e));
     });
-  }
-}
-
-// Incoming message processing
-
-function processIncomingMessage(message) {
-  stop = message.payload.KEY_REQUESTED_PREDICTION_SECTION;
-  route = message.payload.KEY_REQUESTED_PREDICTION_ITEM;
-  if (typeof(stop) == "number") {
-    routeSelectedCallback(stopsAndRoutes[stop].routes[route].uri);
   }
 }

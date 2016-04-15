@@ -5,4 +5,4 @@
 void routes_window_init(void);
 void routes_window_deinit(void);
 
-void routes_list_inbox_received(DictionaryIterator *iterator, void *context);
+void routes_window_inbox_received(DictionaryIterator *iterator, void *context);

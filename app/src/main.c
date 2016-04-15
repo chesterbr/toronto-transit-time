@@ -26,7 +26,8 @@ static void app_deinit(void) {
 }
 
 void inbox_received_callback(DictionaryIterator *iterator, void *context) {
-  routes_list_inbox_received(iterator, context);
+  routes_window_inbox_received(iterator, context);
   predictions_window_inbox_received(iterator, context);
+  splash_layer_inbox_received(iterator, context);
 }
 

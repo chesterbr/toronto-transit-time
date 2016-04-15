@@ -1,21 +1,21 @@
 // External API calls
 // All returns are JavaScript objects
 
-function getRoutes(lat, lon, callback) {
+function getRoutes(lat, lon, callback, errorCallback) {
   var url = 'http://pebblettc.chester.me/menu' +
               '?lat=' + lat +
               '&lon=' + lon;
   xhrRequest(url, 'GET', function(json_routes) {
     routes = JSON.parse(json_routes);
     callback(routes);
-  });
+  }, errorCallback);
 };
 
-function getPredictions(url, callback) {
+function getPredictions(url, callback, errorCallback) {
   xhrRequest(url, 'GET', function(xml_predictions) {
     predictions = ttcXmlToJson(xml_predictions).body.predictions;
     callback(predictions);
-  });
+  }, errorCallback);
 };
 
 module.exports.getRoutes = getRoutes;
@@ -24,11 +24,18 @@ module.exports.getPredictions = getPredictions
 // Private
 
 // TODO error handling
-function xhrRequest(url, type, callback) {
+function xhrRequest(url, type, callback, errorCallback) {
   var xhr = new XMLHttpRequest();
-  xhr.onload = function() {
-    callback(this.responseText);
-  };
+  xhr.onreadystatechange = function(oEvent) {
+    if (xhr.readyState === 4) {
+      if (xhr.status === 200) {
+        callback(this.responseText);
+      } else {
+        errorCallback(xhr.statusText);
+      }
+    }
+  }
+  xhr.timeout = 5000;
   xhr.open(type, url);
   xhr.send();
 };
