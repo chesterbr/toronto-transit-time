@@ -3,7 +3,6 @@
 #include "splash.h"
 
 static Layer *s_splash_layer = NULL;
-static GBitmap *s_splash_logo_bmp;
 static TextLayer *s_splash_message_layer;
 static BitmapLayer *s_splash_streetcar_layer;
 static GBitmap *s_splash_streetcar_bitmap;

@@ -5,7 +5,6 @@
 #include "../modules/bluetooth.h"
 #include <pebble.h>
 
-static void initialize_menu_layer(void);
 static void initialize_sections_array(int section_count);
 static void initialize_session_struct_and_items_array(int items_count);
 static void save_current_section_title(char * title);
@@ -63,7 +62,6 @@ static SimpleMenuItem *s_menu_current_section_items;
 void routes_list_init(void) {
   s_routes_list_window = window_create();
   window_stack_push(s_routes_list_window, true);
-  initialize_menu_layer();
   splash_show("LOADING...");
 }
 
@@ -206,11 +204,6 @@ static void show_list(void) {
 
   layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
   layer_add_child(window_layer, status_bar_layer_get_layer(s_status_bar_layer));
-}
-
-
-static void initialize_menu_layer(void) {
-
 }
 
 static void free_sections_and_items_arrays(void) {

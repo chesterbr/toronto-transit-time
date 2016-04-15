@@ -10,7 +10,6 @@ enum {
 static int s_last_predictions_section;
 static int s_last_predictions_row;
 
-static void inbox_received_callback(DictionaryIterator *iterator, void *context);
 static void inbox_dropped_callback(AppMessageResult reason, void *context);
 static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context);
 
