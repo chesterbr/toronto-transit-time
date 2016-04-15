@@ -1,4 +1,4 @@
-#include "routes_list.h"
+#include "routes.h"
 #include "predictions.h"
 #include "../layers/splash.h"
 #include "../modules/string_buffer.h"
@@ -59,13 +59,13 @@ static int s_menu_current_item_index;
 static char* s_menu_current_item_title;
 static SimpleMenuItem *s_menu_current_section_items;
 
-void routes_list_init(void) {
+void routes_window_init(void) {
   s_routes_list_window = window_create();
   window_stack_push(s_routes_list_window, true);
   splash_show("LOADING...");
 }
 
-void routes_list_deinit(void) {
+void routes_window_deinit(void) {
   menu_layer_destroy(s_menu_layer);
   free_sections_and_items_arrays();
   string_buffer_deinit();
