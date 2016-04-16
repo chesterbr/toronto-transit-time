@@ -25,7 +25,7 @@ class Stop < ApplicationRecord
 
     def as_pebble_menu(lat, lon, stops_count)
       stops_flat = nearest_stops_with_routes(lat, lon, stops_count)
-      hash_array_with_stop_and_routes(stops_flat)
+      array_of_stop_and_routes_hashes(stops_flat)
     end
 
     private
@@ -43,7 +43,7 @@ class Stop < ApplicationRecord
       stops.take(stops_count)
     end
 
-    def hash_array_with_stop_and_routes(stops)
+    def array_of_stop_and_routes_hashes(stops)
       stops.map do |stop|
         {
           stop: stop[0],
