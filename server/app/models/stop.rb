@@ -2,7 +2,7 @@ class Stop < ApplicationRecord
   has_and_belongs_to_many :directions
 
   scope :within_fence_ordered_by_distance, ->(lat, lon, distance) {
-    lat_range, lon_range = Geo.square(lat, lon, 500)
+    lat_range, lon_range = Geo.square(lat, lon, distance)
     order_expr = Geo.distance_criteria(lat,lon)
 
     where(lat: lat_range, lon: lon_range)
@@ -20,15 +20,28 @@ class Stop < ApplicationRecord
   }
 
   class << self
-    def as_pebble_menu(lat, lon)
-      stops_array = Stop.within_fence_ordered_by_distance(lat, lon, 500)
-                        .with_routes_and_directions_grouped_by_address
-                        .to_a
+    MAX_DISTANCE = 500
+    INCREMENT = 100
 
-      hashes_with_stop_and_routes(stops_array)
+    def as_pebble_menu(lat, lon, min_stops)
+      stops_flat = nearest_stops_with_routes(lat, lon, min_stops)
+      hashes_with_stop_and_routes(stops_flat)
     end
 
     private
+
+    def nearest_stops_with_routes(lat, lon, min_stops)
+      stops = []
+      distance = 100
+      loop do
+        stops = Stop.within_fence_ordered_by_distance(lat, lon, distance)
+                    .with_routes_and_directions_grouped_by_address
+                    .to_a
+        distance += INCREMENT
+        break if stops.count >= min_stops || distance > MAX_DISTANCE
+      end
+      stops
+    end
 
     def hashes_with_stop_and_routes(stops)
       stops.map do |stop|
