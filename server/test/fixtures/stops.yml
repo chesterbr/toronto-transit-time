@@ -3,9 +3,9 @@
 one:
   tag: MyString
   lat: 1.5
-  lng: 1.5
+  lon: 1.5
 
 two:
   tag: MyString
   lat: 1.5
-  lng: 1.5
+  lon: 1.5
