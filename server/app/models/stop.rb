@@ -20,30 +20,30 @@ class Stop < ApplicationRecord
   }
 
   class << self
-    MAX_DISTANCE = 500
-    INCREMENT = 100
+    INITIAL_DISTANCE = 250
+    MAX_DISTANCE = 2000
 
-    def as_pebble_menu(lat, lon, min_stops)
-      stops_flat = nearest_stops_with_routes(lat, lon, min_stops)
-      hashes_with_stop_and_routes(stops_flat)
+    def as_pebble_menu(lat, lon, stops_count)
+      stops_flat = nearest_stops_with_routes(lat, lon, stops_count)
+      hash_array_with_stop_and_routes(stops_flat)
     end
 
     private
 
-    def nearest_stops_with_routes(lat, lon, min_stops)
+    def nearest_stops_with_routes(lat, lon, stops_count)
       stops = []
-      distance = 100
+      distance = INITIAL_DISTANCE
       loop do
         stops = Stop.within_fence_ordered_by_distance(lat, lon, distance)
                     .with_routes_and_directions_grouped_by_address
                     .to_a
-        distance += INCREMENT
-        break if stops.count >= min_stops || distance > MAX_DISTANCE
+        distance *= 2
+        break if stops.count >= stops_count || distance > MAX_DISTANCE
       end
-      stops
+      stops.take(stops_count)
     end
 
-    def hashes_with_stop_and_routes(stops)
+    def hash_array_with_stop_and_routes(stops)
       stops.map do |stop|
         {
           stop: stop[0],
