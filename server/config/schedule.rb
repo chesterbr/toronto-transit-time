@@ -5,9 +5,9 @@ RAKE_CRAWLER_ENV =
 job_type :rake_without_db_env_check,
   "cd :path && " \
   "#{RAKE_CRAWLER_ENV} bundle exec rake :task --silent :output && " \
-  "sudo supervisorctl restart pebblettc"
+  "sudo supervisorctl restart totransit"
 
-set :output, '~/pebble-ttc-cronjobs.log'
+set :output, '~/totransit-cronjobs.log'
 
 every :monday, :at => '2:15 am' do
   rake_without_db_env_check "db:reset ttc:crawl"

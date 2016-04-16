@@ -2,7 +2,7 @@
 // All returns are JavaScript objects
 
 function getRoutes(lat, lon, callback, errorCallback) {
-  var url = 'http://pebblettc.chester.me/menu' +
+  var url = 'http://totransit.chester.me/menu' +
               '?lat=' + lat +
               '&lon=' + lon;
   xhrRequest(url, 'GET', function(json_routes) {
