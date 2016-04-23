@@ -18,7 +18,6 @@ TECH DEBT (app):
 TECH DEBT (server):
 
 BUGS:
-- why first call of menu keeps calling the loading screen layer's "fill"?
 
 IMPROVEMENTS:
 - Improve menu listing on Chalk (see the reduction of width on top/bottom can be done; consider not showing the current time; see contentindicator https://developer.pebble.com/guides/design-and-interaction/in-the-round/)

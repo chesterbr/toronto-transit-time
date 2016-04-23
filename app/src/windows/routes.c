@@ -119,6 +119,7 @@ void routes_window_inbox_received(DictionaryIterator *iterator, void *context) {
         break;
       case KEY_MENU_SHOW:
         show_list();
+        splash_hide();
         break;
     }
   }

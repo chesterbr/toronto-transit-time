@@ -99,7 +99,6 @@ static void move_layer_to_top(void) {
 static void fill_background(Layer *layer, GContext *ctx) {
   graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_rect(ctx, s_splash_bounds, 0, GCornerNone);
-  APP_LOG(APP_LOG_LEVEL_INFO, "fill");
 }
 
 
