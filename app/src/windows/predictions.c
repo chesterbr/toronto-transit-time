@@ -5,8 +5,8 @@
 #include <pebble.h>
 #include <stdio.h>
 
-const int SECONDS_BETWEEN_PREDICTION_REFRESHES = 15;
-const int SECONDS_BEFORE_EXITING_PREDICTIONS_SCREEN = 120;
+const int PREDICTIONS_REFRESH_SECONDS = 15;
+const int PREDICTIONS_SCREEN_TIMEOUT_SECONDS = 120;
 
 enum {
   // Inbound message keys
@@ -51,7 +51,7 @@ void predictions_window_inbox_received(DictionaryIterator *iterator, void *conte
         break;
       case KEY_PREDICTION_SHOW:
         s_displayable_items_count++;
-        s_seconds_until_refresh = SECONDS_BETWEEN_PREDICTION_REFRESHES;
+        s_seconds_until_refresh = PREDICTIONS_REFRESH_SECONDS;
         predictions_window_make_visible(PRED_MODE_PREDICTIONS);
         tick_timer_service_subscribe(SECOND_UNIT, update_prediction_times);
         break;
@@ -72,7 +72,7 @@ void predictions_window_make_visible(int mode) {
   }
   if (mode == PRED_MODE_LOADING) {
     s_displayable_items_count = -1;
-    s_seconds_until_exit = SECONDS_BEFORE_EXITING_PREDICTIONS_SCREEN;
+    s_seconds_until_exit = PREDICTIONS_SCREEN_TIMEOUT_SECONDS;
     splash_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
     predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
