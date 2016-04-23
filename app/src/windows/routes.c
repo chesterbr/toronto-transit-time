@@ -62,7 +62,6 @@ static SimpleMenuItem *s_menu_current_section_items;
 void routes_window_init(void) {
   s_routes_list_window = window_create();
   window_stack_push(s_routes_list_window, true);
-  splash_show("LOADING...");
 }
 
 void routes_window_deinit(void) {
