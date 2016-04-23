@@ -7,7 +7,6 @@ FEATURES:
 - Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
 - Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
 - Consider if scroll should instead navigate to next item on menu (but then how do we scroll) and/or whether scroll should be paginated (maybe navigate to next once you go beyond last page)
-- Reset timeout counter when keys are pressed?
 - Display clock on predictions screen?
 
 TECH DEBT (app):

@@ -174,12 +174,15 @@ static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, ui
 }
 
 static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
-  menu_cell_basic_draw(ctx, cell_layer, s_menu_sections[cell_index->section].items[cell_index->row].title,
-     s_menu_sections[cell_index->section].items[cell_index->row].subtitle,
-    NULL);
+  const char* title = s_menu_sections[cell_index->section].items[cell_index->row].title;
+  const char* subtitle = s_menu_sections[cell_index->section].items[cell_index->row].subtitle;
+  menu_cell_basic_draw(ctx, cell_layer, title, subtitle, NULL);
 }
 
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
+  if (cell_index->section == s_menu_sections_count - 1) {
+    return;
+  }
   predictions_window_make_visible(PRED_MODE_LOADING);
   bluetooth_request_predictions(cell_index->section, cell_index->row);
 }

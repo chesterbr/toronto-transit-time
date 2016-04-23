@@ -1,6 +1,9 @@
 // Asynchronous communication with Pebble
 
 var MAX_TIMES_FOR_DIRECITON = 3;
+var ABOUT_SECTION_TITLE = 'Toronto Transit';
+var ABOUT_ITEM_TITLE = 'by @chesterbr';
+var ABOUT_ITEM_SUBTITLE = 'http://chester.me';
 
 var stopsAndRoutes;
 var routeSelectedCallback;
@@ -51,7 +54,7 @@ function processIncomingMessage(message) {
 // Messages to routes window
 
 function buildMenuMessages() {
-  appendToMessage('menu_section_count', stopsAndRoutes.length);
+  appendToMessage('menu_section_count', stopsAndRoutes.length + 1);
   appendToMessage('menu_string_buffer_size', calcBufferSizeForMenuStrings());
 
   stopsAndRoutes.forEach(function(stop) {
@@ -64,6 +67,12 @@ function buildMenuMessages() {
     });
     enqueueMessage();
   });
+
+  appendToMessage('menu_section_items_count', 1);
+  appendToMessage('menu_section_title', ABOUT_SECTION_TITLE);
+  appendToMessage('menu_item_title', ABOUT_ITEM_TITLE);
+  appendToMessage('menu_item_subtitle', ABOUT_ITEM_SUBTITLE);
+  enqueueMessage();
 
   appendToMessage('menu_show', 0);
   enqueueMessage();
@@ -79,6 +88,9 @@ function calcBufferSizeForMenuStrings() {
       size += route['direction'].length + 1;
     });
   });
+  size += ABOUT_SECTION_TITLE.length + 1;
+  size += ABOUT_ITEM_TITLE.length + 1;
+  size += ABOUT_ITEM_SUBTITLE.length + 1;
   return size;
 }
 
