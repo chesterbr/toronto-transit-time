@@ -23,7 +23,6 @@ module.exports.getPredictions = getPredictions
 
 // Private
 
-// TODO error handling
 function xhrRequest(url, type, callback, errorCallback) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function(oEvent) {

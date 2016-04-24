@@ -1,6 +1,7 @@
 #include "routes.h"
 #include "predictions.h"
 #include "../layers/splash.h"
+#include "../layers/routes.h"
 #include "../modules/string_buffer.h"
 #include "../modules/bluetooth.h"
 #include <pebble.h>
@@ -10,7 +11,6 @@ static void initialize_session_struct_and_items_array(int items_count);
 static void save_current_section_title(char * title);
 static void save_current_item_title(char* title);
 static void build_menu_item_using_title_and_subtitle(char* subtitle);
-static void show_list(void);
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data);
 static void free_sections_and_items_arrays(void);
 
@@ -43,20 +43,6 @@ enum {
 };
 
 static Window *s_routes_list_window;
-static MenuLayer *s_menu_layer;
-static StatusBarLayer *s_status_bar_layer;
-
-// Types for menu data structures
-typedef struct {
-  const char *title;
-  const char *subtitle;
-} MenuItem;
-
-typedef struct {
-  const char *title;
-  const MenuItem *items;
-  uint32_t num_items;
-} MenuSection;
 
 // Dynamically allocated menu data structures
 static int s_menu_sections_count;
@@ -74,7 +60,9 @@ void routes_window_init(void) {
 }
 
 void routes_window_deinit(void) {
-  menu_layer_destroy(s_menu_layer);
+  // TODO: where to do this? should we bother?
+  // maybe, check: https://forums.getpebble.com/discussion/10216/understanding-heap-usage-and-still-allocated-bytes
+  // menu_layer_destroy(s_menu_layer);
   free_sections_and_items_arrays();
   string_buffer_deinit();
   window_destroy(s_routes_list_window);
@@ -126,7 +114,7 @@ void routes_window_inbox_received(DictionaryIterator *iterator, void *context) {
         build_menu_item_using_title_and_subtitle(tuple->value->cstring);
         break;
       case KEY_MENU_SHOW:
-        show_list();
+        routes_layer_init(s_routes_list_window, s_menu_sections, s_menu_sections_count, &menu_select_callback);
         splash_hide();
         break;
     }
@@ -166,56 +154,12 @@ static void build_menu_item_using_title_and_subtitle(char* subtitle) {
   s_menu_current_item_index++;
 }
 
-static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
-  return s_menu_sections_count;
-}
-
-static uint16_t menu_get_num_rows_callback(MenuLayer *menu_layer, uint16_t section_index, void *data) {
-  return s_menu_sections[section_index].num_items;
-}
-
-static int16_t menu_get_header_height_callback(MenuLayer *menu_layer, uint16_t section_index, void *data) {
-  return 16; //MENU_CELL_BASIC_HEADER_HEIGHT;
-}
-
-static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, uint16_t section_index, void *data) {
-  menu_cell_basic_header_draw(ctx, cell_layer, s_menu_sections[section_index].title);
-}
-
-static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
-  const char* title = s_menu_sections[cell_index->section].items[cell_index->row].title;
-  const char* subtitle = s_menu_sections[cell_index->section].items[cell_index->row].subtitle;
-  menu_cell_basic_draw(ctx, cell_layer, title, subtitle, NULL);
-}
-
 static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
   if (cell_index->section == s_menu_sections_count - 1) {
     return;
   }
   predictions_window_make_visible(PRED_MODE_LOADING);
   bluetooth_request_predictions(cell_index->section, cell_index->row);
-}
-
-static void show_list(void) {
-  Layer *window_layer = window_get_root_layer(s_routes_list_window);
-  GRect bounds = layer_get_frame(window_layer);
-  bounds.origin.y += STATUS_BAR_LAYER_HEIGHT;
-  s_menu_layer = menu_layer_create(bounds);
-  menu_layer_set_callbacks(s_menu_layer, NULL, (MenuLayerCallbacks){
-    .get_num_sections = menu_get_num_sections_callback,
-    .get_num_rows = menu_get_num_rows_callback,
-    .get_header_height = menu_get_header_height_callback,
-    .draw_header = menu_draw_header_callback,
-    .draw_row = menu_draw_row_callback,
-    .select_click = menu_select_callback,
-  });
-
-  menu_layer_set_click_config_onto_window(s_menu_layer, s_routes_list_window);
-
-  s_status_bar_layer = status_bar_layer_create();
-
-  layer_add_child(window_layer, menu_layer_get_layer(s_menu_layer));
-  layer_add_child(window_layer, status_bar_layer_get_layer(s_status_bar_layer));
 }
 
 static void free_sections_and_items_arrays(void) {
