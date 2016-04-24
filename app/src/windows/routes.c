@@ -46,18 +46,27 @@ static Window *s_routes_list_window;
 static MenuLayer *s_menu_layer;
 static StatusBarLayer *s_status_bar_layer;
 
-// TODO we're still using the simplemenulayer's data structures. It was a quick hack
-// to make it work, but we should convert to our own structures.
+// Types for menu data structures
+typedef struct {
+  const char *title;
+  const char *subtitle;
+} MenuItem;
+
+typedef struct {
+  const char *title;
+  const MenuItem *items;
+  uint32_t num_items;
+} MenuSection;
 
 // Dynamically allocated menu data structures
 static int s_menu_sections_count;
-static SimpleMenuSection *s_menu_sections;
+static MenuSection *s_menu_sections;
 
 // Counters and pointers used during menu population
 static int s_menu_current_section_index;
 static int s_menu_current_item_index;
 static char* s_menu_current_item_title;
-static SimpleMenuItem *s_menu_current_section_items;
+static MenuItem *s_menu_current_section_items;
 
 void routes_window_init(void) {
   s_routes_list_window = window_create();
@@ -128,13 +137,13 @@ void routes_window_inbox_received(DictionaryIterator *iterator, void *context) {
 
 static void initialize_sections_array(int section_count) {
   s_menu_sections_count = section_count;
-  s_menu_sections = (SimpleMenuSection *)malloc(s_menu_sections_count * sizeof(SimpleMenuSection));
+  s_menu_sections = (MenuSection *)malloc(s_menu_sections_count * sizeof(MenuSection));
   s_menu_current_section_index = -1;
 }
 
 static void initialize_session_struct_and_items_array(int items_count) {
-  s_menu_current_section_items = (SimpleMenuItem *)malloc(items_count * sizeof(SimpleMenuItem));
-  s_menu_sections[++s_menu_current_section_index] = (SimpleMenuSection) {
+  s_menu_current_section_items = (MenuItem *)malloc(items_count * sizeof(MenuItem));
+  s_menu_sections[++s_menu_current_section_index] = (MenuSection) {
     .num_items = items_count,
     .items = s_menu_current_section_items,
   };
@@ -150,7 +159,7 @@ static void save_current_item_title(char* title) {
 }
 
 static void build_menu_item_using_title_and_subtitle(char* subtitle) {
-  s_menu_current_section_items[s_menu_current_item_index] = (SimpleMenuItem) {
+  s_menu_current_section_items[s_menu_current_item_index] = (MenuItem) {
     .title = s_menu_current_item_title,
     .subtitle = string_buffer_store(subtitle)
   };
