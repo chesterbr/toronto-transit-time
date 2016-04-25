@@ -75,7 +75,7 @@ void predictions_window_make_visible(int mode) {
     s_seconds_until_exit = PREDICTIONS_SCREEN_TIMEOUT_SECONDS;
     splash_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
-    predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
+    // predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
     splash_hide();
   }
 }
