@@ -3,11 +3,13 @@ TODO
 (this is my internal tasks control; we're ready to publish when there is nothing on the FEATURES list, but the others should be ideally clean also)
 
 FEATURES:
-- Display address on predictions screen
-- Increase font? / Have separate fields for predictions/alerts? / Use direction names from main menu?
-- Auto-adjust scroll window height (this may be tricky) https://forums.getpebble.com/discussion/9661/dynamically-set-text-layer-height
-- Consider if scroll should instead navigate to next item on menu (but then how do we scroll) and/or whether scroll should be paginated (maybe navigate to next once you go beyond last page)
-- Display clock on predictions screen?
+Predictions Screen:
+  - Update third time field
+  - Respond to up/down keys (change current item, mark all layers dirty)
+  - Show/hide content indicators according to current item
+  - Display/update address
+  - Test message display
+  - Reduce times (do it on the window, not on the layer)
 
 TECH DEBT (app):
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/); check a todo for freeing a layer (and general freeing of memory on link in such todo)
@@ -16,7 +18,6 @@ TECH DEBT (app):
 TECH DEBT (server):
 
 BUGS:
-- DUE is shown for time < 0, should be for time -1
 
 IMPROVEMENTS:
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
