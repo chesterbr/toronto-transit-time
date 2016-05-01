@@ -5,7 +5,6 @@ TODO
 FEATURES:
 Predictions Screen:
   - Display/update address
-  - Test message display
   - Print "no predictions" if there are none (but not if it's a message)
 
 TECH DEBT (app):
