@@ -167,6 +167,10 @@ static void update_current_display_item() {
 }
 
 static int format_time(char* var, DisplayableItem item, int index) {
+  if (index >= item.times_count) {
+    *var = '\0';
+    return 0;
+  }
   char* format;
   int value = item.times[index];
   if (value >= 60) {
