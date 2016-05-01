@@ -126,7 +126,7 @@ function buildPredictionMessages() {
 
 function values(obj, tagName) {
   // Needed because tags that appear multiple times on the TTC API XML
-  // are repesented like sometag_1, sometag_2, etc.
+  // are represented as sometag_1, sometag_2, etc.
   return Object.keys(obj).sort().filter(function (key) {
     return key.indexOf(tagName + "_") == 0;
   }).map(function(key) {

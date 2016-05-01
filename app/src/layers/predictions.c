@@ -22,6 +22,7 @@ static char *s_first_prediction_text;
 static char *s_other_predictions_text;
 
 static void update_current_display_item();
+static void update_up_and_down_content_indicators();
 static int format_time(char* var, DisplayableItem item, int index);
 static void fill_background(Layer *layer, GContext *ctx);
 
@@ -146,7 +147,7 @@ void predictions_layer_update(DisplayableItem *items, int count, bool reset_scro
   if (reset_scroll) {
     s_current_item = 0;
   }
-
+  update_up_and_down_content_indicators();
   update_current_display_item();
 }
 
@@ -167,6 +168,13 @@ static void update_current_display_item() {
     text_layer_set_text(s_first_prediction_text_layer, NULL);
     text_layer_set_text(s_other_predictions_text_layer, NULL);
   }
+}
+
+static void update_up_and_down_content_indicators() {
+  content_indicator_set_content_available(s_indicator,
+    ContentIndicatorDirectionUp, s_current_item > 0);
+  content_indicator_set_content_available(s_indicator,
+    ContentIndicatorDirectionDown, s_current_item < s_items_count - 1);
 }
 
 static int format_time(char* var, DisplayableItem item, int index) {
