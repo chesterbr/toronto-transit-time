@@ -19,7 +19,6 @@ IMPROVEMENTS:
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
 - Show error when no stops are found (e.g., not in Toronto)
 - Options screen
-- Check naming (short/long)
 - README
 
 - Mention on docs:
