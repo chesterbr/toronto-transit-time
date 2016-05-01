@@ -1,9 +1,14 @@
-function getLocation(callback, errorCallback) {
-  navigator.geolocation.getCurrentPosition(
-    callback,
-    errorCallback,
-    {timeout: 10000, maximumAge: 60000}
-  );
+var TIMEOUT = 15000;
+var MAXIMUM_AGE = 60000;
+
+function getCoordinates(onSuccess, onError) {
+  options = { timeout: TIMEOUT, maximumAge: MAXIMUM_AGE }
+
+  onSuccessWrapper = function(position) {
+    onSuccess(position.coords.latitude, position.coords.longitude);
+  };
+
+  navigator.geolocation.getCurrentPosition(onSuccessWrapper, onError, options);
 }
 
-module.exports.getLocation = getLocation;
+module.exports.getCoordinates = getCoordinates;
