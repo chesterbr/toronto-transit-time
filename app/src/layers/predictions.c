@@ -154,7 +154,8 @@ static void update_current_display_item() {
   text_layer_set_text(s_main_text_layer, item.text);
   if (item.is_prediction) {
     format_time(s_first_prediction_text, item, 0);
-    format_time(s_other_predictions_text, item, 1);
+    int pos = format_time(s_other_predictions_text, item, 1);
+    format_time(s_other_predictions_text + pos, item, 2);
     text_layer_set_text(s_secondary_text_layer, "TODO put stop address");
     text_layer_set_text(s_first_prediction_text_layer, s_first_prediction_text);
     text_layer_set_text(s_other_predictions_text_layer, s_other_predictions_text);
@@ -169,12 +170,12 @@ static int format_time(char* var, DisplayableItem item, int index) {
   char* format;
   int value = item.times[index];
   if (value >= 60) {
-    format = "%dmin";
+    format = "%dmin\n";
     value = value / 60;
   } else if (value > 0) {
-    format = "%ds";
+    format = "%ds\n";
   } else {
-    format = "DUE";
+    format = "DUE\n";
   }
   return snprintf(var, PREDICTION_TEXT_SIZE, format, value);
 }
