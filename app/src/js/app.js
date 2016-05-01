@@ -12,6 +12,9 @@ function onRouteSelected(uri) {
   openPredictions(uri);
 }
 
+Watch.addEventListener('ready', onPebbleReady);
+Watch.addEventListener('route_selected', onRouteSelected);
+
 // Routes window flow
 
 function openRoutesList() {
@@ -52,7 +55,3 @@ function onPredictionsError() {
   Watch.displayTextErrorPredictions();
 }
 
-// Wiring
-
-Watch.addEventListener('ready', onPebbleReady);
-Watch.addEventListener('route_selected', onRouteSelected);
