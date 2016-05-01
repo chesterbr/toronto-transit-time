@@ -3,11 +3,9 @@ TODO
 (this is my internal tasks control; we're ready to publish when there is nothing on the FEATURES list, but the others should be ideally clean also)
 
 FEATURES:
-Predictions Screen:
-  - Display/update address
-  - Print "no predictions" if there are none (but not if it's a message)
 
 TECH DEBT (app):
+- Move predictions times text writing to background-filling routine, name it appropriately (e.g. "render_predictions")
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/); check a todo for freeing a layer (and general freeing of memory on link in such todo)
 - Rewrite centering code to be less weird (or remove the todo)
 
@@ -17,6 +15,8 @@ BUGS:
 
 IMPROVEMENTS:
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
+- Improve fonts on predictions screen
+- Improve predictions box on predictions screen
 - Show error when no stops are found (e.g., not in Toronto)
 - Options screen
 - README

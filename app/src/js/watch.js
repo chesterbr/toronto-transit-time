@@ -102,11 +102,13 @@ function buildPredictionMessages() {
   var directions = values(predictions, 'direction');
   var ttcAlerts = values(predictions, 'message');
 
+  appendToMessage('prediction_stop_address', predictions.stopTitle);
   if (directions.length == 0) {
-    appendToMessage('prediction_title', predictions.dirTitleBecauseNoPredictions);
+    appendToMessage('prediction_route_text', predictions.dirTitleBecauseNoPredictions);
+    enqueueMessage();
   } else {
     directions.forEach(function(direction) {
-      appendToMessage('prediction_title', direction.title);
+      appendToMessage('prediction_route_text', direction.title);
       var times = values(direction, 'prediction');
       times.slice(0, MAX_TIMES_FOR_DIRECITON).forEach(function(time) {
         appendToMessage('prediction_seconds', parseInt(time.seconds));

@@ -10,16 +10,18 @@ const int PREDICTIONS_SCREEN_TIMEOUT_SECONDS = 120;
 
 enum {
   // Inbound message keys
-  KEY_PREDICTION_TITLE           = 200,
-  KEY_PREDICTION_TTC_ALERT       = 201,
-  KEY_PREDICTION_SECONDS_1       = 202,
-  KEY_PREDICTION_SECONDS_2       = 203,
-  KEY_PREDICTION_SECONDS_3       = 204,
-  KEY_PREDICTION_SHOW            = 205,
+  KEY_PREDICTION_ROUTE_TEXT   = 200,
+  KEY_PREDICTION_STOP_ADDRESS = 201,
+  KEY_PREDICTION_TTC_ALERT    = 202,
+  KEY_PREDICTION_SECONDS_1    = 203,
+  KEY_PREDICTION_SECONDS_2    = 204,
+  KEY_PREDICTION_SECONDS_3    = 205,
+  KEY_PREDICTION_SHOW         = 206,
 };
 
 static Window *s_predictions_window;
 
+static char* s_stop_address;
 static DisplayableItem s_displayable_items[10];
 static int s_displayable_items_count;
 static int s_seconds_until_refresh;
@@ -31,18 +33,21 @@ static void update_prediction_times(tm *tick_time, TimeUnits units_changed);
 static void config_provider(Window *window);
 
 void predictions_window_inbox_received(DictionaryIterator *iterator, void *context) {
-  for(int key = KEY_PREDICTION_TITLE; key <= KEY_PREDICTION_SHOW; key++) {
+  for(int key = KEY_PREDICTION_ROUTE_TEXT; key <= KEY_PREDICTION_SHOW; key++) {
     Tuple *tuple = dict_find(iterator, key);
     if (tuple == NULL) {
       continue;
     }
     switch (tuple->key) {
-      case KEY_PREDICTION_TITLE:
+      case KEY_PREDICTION_ROUTE_TEXT:
       case KEY_PREDICTION_TTC_ALERT:
         s_displayable_items_count++;
         s_displayable_items[s_displayable_items_count].text = strdup(tuple->value->cstring);
         s_displayable_items[s_displayable_items_count].times_count = 0;
-        s_displayable_items[s_displayable_items_count].is_prediction = tuple->key == KEY_PREDICTION_TITLE;
+        s_displayable_items[s_displayable_items_count].is_prediction = tuple->key == KEY_PREDICTION_ROUTE_TEXT;
+        break;
+      case KEY_PREDICTION_STOP_ADDRESS:
+        s_stop_address = strdup(tuple->value->cstring);
         break;
       case KEY_PREDICTION_SECONDS_1:
       case KEY_PREDICTION_SECONDS_2:
@@ -77,7 +82,7 @@ void predictions_window_make_visible(int mode) {
     s_seconds_until_exit = PREDICTIONS_SCREEN_TIMEOUT_SECONDS;
     splash_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
-    predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
+    predictions_layer_update(s_stop_address, s_displayable_items, s_displayable_items_count, true);
     splash_hide();
   }
 }
@@ -89,9 +94,11 @@ static void config_provider(Window *window) {
 
 static void predictions_window_disappear(struct Window *window) {
   tick_timer_service_unsubscribe();
+  // TODO this should be on deinit handle (will crash if we get a notification)
   for(int i = 0; i < s_displayable_items_count; i++) {
     free(s_displayable_items[i].text);
   }
+  free(s_stop_address);
 }
 
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
@@ -103,7 +110,7 @@ static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
       s_displayable_items[i].times[j] -= 1;
     }
   }
-    predictions_layer_update(s_displayable_items, s_displayable_items_count, false);
+    predictions_layer_update(s_stop_address, s_displayable_items, s_displayable_items_count, false);
     layer_mark_dirty(window_get_root_layer(s_predictions_window));
   } else {
     s_displayable_items_count = -1;

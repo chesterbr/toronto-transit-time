@@ -15,6 +15,7 @@ static GRect s_predictions_layer_bounds;
 static GRect s_first_prediction_text_bounds;
 static GRect s_other_predictions_text_bounds;
 
+static char *s_stop_address;
 static DisplayableItem *s_items;
 static int s_items_count;
 static int s_current_item;
@@ -115,8 +116,15 @@ void predictions_layer_init(Window *window) {
 }
 
 static void fill_background(Layer *layer, GContext *ctx) {
-  if (s_items == NULL || s_items[s_current_item].times_count == 0) {
-    // TODO print "no predictions"
+  if (s_items == NULL || !s_items[s_current_item].is_prediction) {
+    return;
+  }
+
+  if (s_items[s_current_item].is_prediction && s_items[s_current_item].times_count == 0) {
+    GFont font = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
+    graphics_context_set_text_color(ctx, GColorBlack);
+    graphics_draw_text(ctx, "No predictions", font, s_bounds,
+      GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
     return;
   }
 
@@ -140,7 +148,8 @@ static void fill_background(Layer *layer, GContext *ctx) {
     s_predictions_layer_bounds.size.h), 12);
 }
 
-void predictions_layer_update(DisplayableItem *items, int count, bool reset_scroll) {
+void predictions_layer_update(char *stop_address, DisplayableItem *items, int count, bool reset_scroll) {
+  s_stop_address = stop_address;
   s_items = items;
   s_items_count = count;
 
@@ -169,11 +178,12 @@ void predictions_layer_button_up_handler(ClickRecognizerRef recognizer, void *co
 static void update_current_display_item() {
   DisplayableItem item = s_items[s_current_item];
   text_layer_set_text(s_main_text_layer, item.text);
-  if (item.is_prediction) {
+  APP_LOG(APP_LOG_LEVEL_ERROR, "item %d %d", item.is_prediction, item.times_count);
+  if (item.is_prediction && item.times_count > 0) {
     format_time(s_first_prediction_text, item, 0);
     int pos = format_time(s_other_predictions_text, item, 1);
     format_time(s_other_predictions_text + pos, item, 2);
-    text_layer_set_text(s_secondary_text_layer, "TODO put stop address");
+    text_layer_set_text(s_secondary_text_layer, s_stop_address);
     text_layer_set_text(s_first_prediction_text_layer, s_first_prediction_text);
     text_layer_set_text(s_other_predictions_text_layer, s_other_predictions_text);
   } else {
