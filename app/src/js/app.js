@@ -14,7 +14,7 @@ function onRouteSelected(uri) {
 
 // Routes window flow
 
-function openRoutesList(e) {
+function openRoutesList() {
   Watch.displayTextFindingLocation();
   Geo.getCoordinates(onCoordinatesSuccess, onCoordinatesError);
 };
@@ -29,6 +29,7 @@ function onRoutesSuccess(routes) {
 };
 
 // Predictions window flow
+
 function openPredictions(uri) {
   Internet.getPredictions(uri, onPredictionsSuccess, onPredictionsError);
 }
@@ -55,24 +56,3 @@ function onPredictionsError() {
 
 Watch.addEventListener('ready', onPebbleReady);
 Watch.addEventListener('route_selected', onRouteSelected);
-
-function openRoutesList(e) {
-  Watch.displayTextFindingLocation();
-  Geo.getLocation(function(loc) {
-    Watch.displayTextFindingStops();
-    Internet.getRoutes(loc.coords.latitude, loc.coords.longitude,
-      Watch.sendRoutes,
-      Watch.displayTextErrorStops
-    );
-  }, Watch.displayTextErrorLocation);
-}
-
-function openPredictions(uri) {
-  Internet.getPredictions(uri,
-    Watch.sendPredictions,
-    Watch.displayTextErrorPredictions
-  );
-}
-
-Watch.addEventListener('ready', openRoutesList);
-Watch.addEventListener('route_selected', openPredictions);
