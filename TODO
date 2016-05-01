@@ -4,7 +4,6 @@ TODO
 
 FEATURES:
 Predictions Screen:
-  - Respond to up/down keys (change current item, mark all layers dirty)
   - Display/update address
   - Test message display
   - Print "no predictions" if there are none (but not if it's a message)

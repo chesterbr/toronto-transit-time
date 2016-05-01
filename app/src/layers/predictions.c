@@ -147,8 +147,21 @@ void predictions_layer_update(DisplayableItem *items, int count, bool reset_scro
   if (reset_scroll) {
     s_current_item = 0;
   }
-  update_up_and_down_content_indicators();
   update_current_display_item();
+}
+
+void predictions_layer_button_down_handler(ClickRecognizerRef recognizer, void *context) {
+  if (s_current_item < s_items_count - 1) {
+    s_current_item++;
+    update_current_display_item();
+  }
+}
+
+void predictions_layer_button_up_handler(ClickRecognizerRef recognizer, void *context) {
+  if (s_current_item > 0) {
+    s_current_item--;
+    update_current_display_item();
+  }
 }
 
 // Private
@@ -168,6 +181,7 @@ static void update_current_display_item() {
     text_layer_set_text(s_first_prediction_text_layer, NULL);
     text_layer_set_text(s_other_predictions_text_layer, NULL);
   }
+  update_up_and_down_content_indicators();
 }
 
 static void update_up_and_down_content_indicators() {

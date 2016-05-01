@@ -28,6 +28,7 @@ static int s_seconds_until_exit;
 static char* strdup(const char* str);
 static void predictions_window_disappear(struct Window *window);
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed);
+static void config_provider(Window *window);
 
 void predictions_window_inbox_received(DictionaryIterator *iterator, void *context) {
   for(int key = KEY_PREDICTION_TITLE; key <= KEY_PREDICTION_SHOW; key++) {
@@ -66,6 +67,7 @@ void predictions_window_make_visible(int mode) {
       .disappear = predictions_window_disappear,
     });
     predictions_layer_init(s_predictions_window);
+    window_set_click_config_provider(s_predictions_window, (ClickConfigProvider)config_provider);
   }
   if (window_stack_get_top_window() != s_predictions_window) {
     window_stack_push(s_predictions_window, true);
@@ -78,6 +80,11 @@ void predictions_window_make_visible(int mode) {
     predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
     splash_hide();
   }
+}
+
+static void config_provider(Window *window) {
+  window_single_click_subscribe(BUTTON_ID_UP, predictions_layer_button_up_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, predictions_layer_button_down_handler);
 }
 
 static void predictions_window_disappear(struct Window *window) {
