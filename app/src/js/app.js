@@ -4,6 +4,9 @@ Geo      = require('geo');      // Geolocation
 
 // Main events
 
+Watch.addEventListener('ready', onPebbleReady);
+Watch.addEventListener('route_selected', onRouteSelected);
+
 function onPebbleReady(e) {
   openRoutesList();
 };
@@ -11,9 +14,6 @@ function onPebbleReady(e) {
 function onRouteSelected(uri) {
   openPredictions(uri);
 }
-
-Watch.addEventListener('ready', onPebbleReady);
-Watch.addEventListener('route_selected', onRouteSelected);
 
 // Routes window flow
 
