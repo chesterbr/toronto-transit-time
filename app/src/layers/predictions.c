@@ -114,7 +114,10 @@ void predictions_layer_init(Window *window) {
 }
 
 static void fill_background(Layer *layer, GContext *ctx) {
-  APP_LOG(APP_LOG_LEVEL_ERROR, "draw");
+  if (s_items == NULL || s_items[s_current_item].times_count == 0) {
+    // TODO print "no predictions"
+    return;
+  }
 
   graphics_context_set_stroke_color(ctx, GColorBlack);
   graphics_context_set_stroke_width(ctx, 6);

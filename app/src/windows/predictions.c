@@ -75,7 +75,7 @@ void predictions_window_make_visible(int mode) {
     s_seconds_until_exit = PREDICTIONS_SCREEN_TIMEOUT_SECONDS;
     splash_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
-    // predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
+    predictions_layer_update(s_displayable_items, s_displayable_items_count, true);
     splash_hide();
   }
 }
@@ -91,6 +91,11 @@ static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
   if (--s_seconds_until_exit == 0) {
     window_stack_pop(true);
   } else if (--s_seconds_until_refresh > 0) {
+  for(int i = 0; i < s_displayable_items_count; i++) {
+    for(int j = 0; j < s_displayable_items[i].times_count; j++) {
+      s_displayable_items[i].times[j] -= 1;
+    }
+  }
     predictions_layer_update(s_displayable_items, s_displayable_items_count, false);
     layer_mark_dirty(window_get_root_layer(s_predictions_window));
   } else {
