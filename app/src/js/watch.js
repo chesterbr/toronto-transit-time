@@ -114,16 +114,6 @@ function buildPredictionMessages() {
     });
   }
 
-  // uncomment to have some predictions pages to test
-  // appendToMessage('prediction_stop_address', 'John Street West at Paul and George Way');
-  // appendToMessage('prediction_route_text', 'Some line coming from some place and going somewhere else');
-  // appendToMessage('prediction_seconds_1', 5);
-  // appendToMessage('prediction_seconds_2', 35);
-  // appendToMessage('prediction_seconds_3', 200);
-  // enqueueMessage();
-  // appendToMessage('prediction_ttc_alert', 'ohai here are some ttc messages ktkxbai');
-  // enqueueMessage();
-
   ttcAlerts.forEach(function(alert) {
     appendToMessage('prediction_ttc_alert', alert.text);
     enqueueMessage();

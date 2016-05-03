@@ -1,6 +1,7 @@
 #include "predictions.h"
 
 const int PREDICTION_TEXT_SIZE = 15;
+const int CONTENT_INDICATOR_HEIGHT = 8;
 
 static TextLayer *s_main_text_layer;
 static TextLayer *s_secondary_text_layer;
@@ -32,20 +33,20 @@ void predictions_layer_init(Window *window) {
   s_bounds = layer_get_bounds(window_layer);
 
   GRect main_text_bounds = GRect(
-    s_bounds.origin.x, STATUS_BAR_LAYER_HEIGHT,
-    s_bounds.size.w, s_bounds.size.h - 2 * STATUS_BAR_LAYER_HEIGHT
+    s_bounds.origin.x, CONTENT_INDICATOR_HEIGHT,
+    s_bounds.size.w, s_bounds.size.h - 2 * CONTENT_INDICATOR_HEIGHT
   );
   s_main_text_layer = text_layer_create(main_text_bounds);
   text_layer_set_text_alignment(s_main_text_layer, GTextAlignmentCenter);
-  text_layer_set_font(s_main_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+  text_layer_set_font(s_main_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD));
 
   GRect secondary_text_bounds = GRect(
-    s_bounds.origin.x, s_bounds.size.h * 0.65,
-    s_bounds.size.w, s_bounds.size.h - STATUS_BAR_LAYER_HEIGHT
+    s_bounds.origin.x, s_bounds.size.h * 0.60,
+    s_bounds.size.w, s_bounds.size.h
   );
   s_secondary_text_layer = text_layer_create(secondary_text_bounds);
   text_layer_set_text_alignment(s_secondary_text_layer, GTextAlignmentCenter);
-  text_layer_set_font(s_secondary_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14));
+  text_layer_set_font(s_secondary_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
 
   s_first_prediction_text_bounds = GRect(
     s_bounds.origin.x, s_bounds.size.h * 0.40,
@@ -72,9 +73,9 @@ void predictions_layer_init(Window *window) {
 
   s_indicator = content_indicator_create();
   s_indicator_up_layer = layer_create(GRect(s_bounds.origin.x, s_bounds.origin.y,
-                                      s_bounds.size.w, STATUS_BAR_LAYER_HEIGHT));
-  s_indicator_down_layer = layer_create(GRect(0, s_bounds.size.h - STATUS_BAR_LAYER_HEIGHT,
-                                        s_bounds.size.w, STATUS_BAR_LAYER_HEIGHT));
+                                      s_bounds.size.w, CONTENT_INDICATOR_HEIGHT));
+  s_indicator_down_layer = layer_create(GRect(0, s_bounds.size.h - CONTENT_INDICATOR_HEIGHT,
+                                        s_bounds.size.w, CONTENT_INDICATOR_HEIGHT));
 
   const ContentIndicatorConfig up_config = (ContentIndicatorConfig) {
     .layer = s_indicator_up_layer,
@@ -179,17 +180,18 @@ static void update_current_display_item() {
   DisplayableItem item = s_items[s_current_item];
   text_layer_set_text(s_main_text_layer, item.text);
   APP_LOG(APP_LOG_LEVEL_ERROR, "item %d %d", item.is_prediction, item.times_count);
-  if (item.is_prediction && item.times_count > 0) {
-    format_time(s_first_prediction_text, item, 0);
-    int pos = format_time(s_other_predictions_text, item, 1);
-    format_time(s_other_predictions_text + pos, item, 2);
+  text_layer_set_text(s_secondary_text_layer, NULL);
+  text_layer_set_text(s_first_prediction_text_layer, NULL);
+  text_layer_set_text(s_other_predictions_text_layer, NULL);
+  if (item.is_prediction) {
     text_layer_set_text(s_secondary_text_layer, s_stop_address);
-    text_layer_set_text(s_first_prediction_text_layer, s_first_prediction_text);
-    text_layer_set_text(s_other_predictions_text_layer, s_other_predictions_text);
-  } else {
-    text_layer_set_text(s_secondary_text_layer, NULL);
-    text_layer_set_text(s_first_prediction_text_layer, NULL);
-    text_layer_set_text(s_other_predictions_text_layer, NULL);
+    if (item.times_count > 0) {
+      format_time(s_first_prediction_text, item, 0);
+      int pos = format_time(s_other_predictions_text, item, 1);
+      format_time(s_other_predictions_text + pos, item, 2);
+      text_layer_set_text(s_first_prediction_text_layer, s_first_prediction_text);
+      text_layer_set_text(s_other_predictions_text_layer, s_other_predictions_text);
+    }
   }
   update_up_and_down_content_indicators();
 }

@@ -77,7 +77,6 @@ static void ensure_layer_initialized(void) {
   text_layer_set_text_alignment(s_splash_message_layer, GTextAlignmentCenter);
 
   s_splash_streetcar_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_STREETCAR);
-  // TODO rewrite this my way
   GSize image_size = gbitmap_get_bounds(s_splash_streetcar_bitmap).size;
   GPoint center = grect_center_point(&s_splash_bounds);
   GRect image_frame = GRect(center.x, center.y, image_size.w, image_size.h);
