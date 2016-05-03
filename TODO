@@ -5,13 +5,14 @@ TODO
 FEATURES:
 
 TECH DEBT (app):
-- Move predictions times text writing to background-filling routine, name it appropriately (e.g. "render_predictions")
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/); check a todo for freeing a layer (and general freeing of memory on link in such todo)
 - Rewrite centering code to be less weird (or remove the todo)
+- Consider: move predictions times text writing to background-filling routine, name it appropriately (e.g. "render_predictions")
 
 TECH DEBT (server):
 
 BUGS:
+- Do not return to first page upon refresh
 
 IMPROVEMENTS:
 - Consider custom colors: https://developer.pebble.com/guides/tools-and-resources/color-picker/#FFFFFF
