@@ -10,7 +10,6 @@ Predictions Screen:
 TECH DEBT (app):
 - Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/); check a todo for freeing a layer (and general freeing of memory on link in such todo)
 - Rewrite centering code to be less weird (or remove the todo)
-- Reconciliate PR #1 (JS de-clusterification)
 
 TECH DEBT (server):
 
