@@ -26,6 +26,7 @@ static DisplayableItem s_displayable_items[10];
 static int s_displayable_items_count;
 static int s_seconds_until_refresh;
 static int s_seconds_until_exit;
+static bool s_reset_scroll;
 
 static char* strdup(const char* str);
 static void predictions_window_disappear(struct Window *window);
@@ -79,10 +80,11 @@ void predictions_window_make_visible(int mode) {
   }
   if (mode == PRED_MODE_LOADING) {
     s_displayable_items_count = -1;
+    s_reset_scroll = true;
     s_seconds_until_exit = PREDICTIONS_SCREEN_TIMEOUT_SECONDS;
     splash_show("LOADING PREDICTIONS...");
   } else if (mode == PRED_MODE_PREDICTIONS) {
-    predictions_layer_update(s_stop_address, s_displayable_items, s_displayable_items_count, true);
+    predictions_layer_update(s_stop_address, s_displayable_items, s_displayable_items_count, s_reset_scroll);
     splash_hide();
   }
 }
@@ -114,6 +116,7 @@ static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
     layer_mark_dirty(window_get_root_layer(s_predictions_window));
   } else {
     s_displayable_items_count = -1;
+    s_reset_scroll = false;
     splash_show("REFRESHING...");
     bluetooth_refresh_predictions();
   }

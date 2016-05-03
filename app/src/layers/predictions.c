@@ -1,4 +1,5 @@
 #include "predictions.h"
+#include "modules/util.h"
 
 const int PREDICTION_TEXT_SIZE = 15;
 const int CONTENT_INDICATOR_HEIGHT = 8;
@@ -156,6 +157,8 @@ void predictions_layer_update(char *stop_address, DisplayableItem *items, int co
 
   if (reset_scroll) {
     s_current_item = 0;
+  } else {
+    s_current_item = min(s_current_item, count - 1);
   }
   update_current_display_item();
 }

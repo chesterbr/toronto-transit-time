@@ -10,7 +10,6 @@ TECH DEBT (app):
 TECH DEBT (server):
 
 BUGS:
-- Do not return to first page upon refresh
 - Translate HTML entities on scraper (e.g. &apos;)
 
 IMPROVEMENTS:
