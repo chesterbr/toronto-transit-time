@@ -14,7 +14,6 @@ BUGS:
 - Translate HTML entities on scraper (e.g. &apos;)
 
 IMPROVEMENTS:
-- Show error when no stops are found (e.g., not in Toronto)
 - Options screen
 - README
 
