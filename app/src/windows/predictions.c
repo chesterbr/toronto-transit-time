@@ -2,8 +2,8 @@
 #include "../layers/splash.h"
 #include "../layers/predictions.h"
 #include "../modules/bluetooth.h"
+#include "../modules/util.h"
 #include <pebble.h>
-#include <stdio.h>
 
 const int PREDICTIONS_REFRESH_SECONDS = 15;
 const int PREDICTIONS_SCREEN_TIMEOUT_SECONDS = 120;
@@ -28,7 +28,6 @@ static int s_seconds_until_refresh;
 static int s_seconds_until_exit;
 static bool s_reset_scroll;
 
-static char* strdup(const char* str);
 static void predictions_window_disappear(struct Window *window);
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed);
 static void config_provider(Window *window);
@@ -120,9 +119,4 @@ static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
     splash_show("REFRESHING...");
     bluetooth_refresh_predictions();
   }
-}
-
-static char* strdup(const char* str)
-{
-  return strcpy(malloc(strlen(str) * sizeof(char) + 1), str);
 }
