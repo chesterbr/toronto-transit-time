@@ -11,8 +11,8 @@ function onPebbleReady(e) {
   openRoutesList();
 };
 
-function onRouteSelected(uri) {
-  openPredictions(uri);
+function onRouteSelected(route) {
+  openPredictions(route);
 }
 
 // Routes window flow
@@ -33,8 +33,8 @@ function onRoutesSuccess(routes) {
 
 // Predictions window flow
 
-function openPredictions(uri) {
-  Internet.getPredictions(uri, onPredictionsSuccess, onPredictionsError);
+function openPredictions(route) {
+  Internet.getPredictions(route.uri, onPredictionsSuccess, onPredictionsError);
 }
 
 function onPredictionsSuccess(predictions) {

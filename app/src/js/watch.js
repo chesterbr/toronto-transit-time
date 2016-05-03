@@ -1,6 +1,4 @@
-// Asynchronous communication with Pebble
-
-var MAX_TIMES_FOR_DIRECITON = 3;
+var MAX_TIMES_FOR_DIRECTION = 3;
 var ABOUT_SECTION_TITLE = 'Toronto Transit';
 var ABOUT_ITEM_TITLE = 'by @chesterbr';
 var ABOUT_ITEM_SUBTITLE = 'http://chester.me';
@@ -23,7 +21,6 @@ function sendRoutes(routes) {
 }
 
 function sendPredictions(predictions) {
-  console.log(JSON.stringify(predictions));
   buildPredictionMessages();
   dispatchMessages();
 }
@@ -32,7 +29,7 @@ module.exports.addEventListener = addEventListener;
 module.exports.sendRoutes = sendRoutes;
 module.exports.sendPredictions = sendPredictions;
 
-// These codes match the ones on splash.c
+// Numeric codes match those on splash.c
 module.exports.displayTextFindingLocation  = function() { displayText(0) };
 module.exports.displayTextErrorLocation    = function() { displayText(1) };
 module.exports.displayTextFindingStops     = function() { displayText(2) };
@@ -47,7 +44,7 @@ function processIncomingMessage(message) {
   stop = message.payload.KEY_REQUESTED_PREDICTION_SECTION;
   route = message.payload.KEY_REQUESTED_PREDICTION_ITEM;
   if (typeof(stop) == "number") {
-    routeSelectedCallback(stopsAndRoutes[stop].routes[route].uri);
+    routeSelectedCallback(stopsAndRoutes[stop].routes[route]);
   }
 }
 
@@ -110,12 +107,22 @@ function buildPredictionMessages() {
     directions.forEach(function(direction) {
       appendToMessage('prediction_route_text', direction.title);
       var times = values(direction, 'prediction');
-      times.slice(0, MAX_TIMES_FOR_DIRECITON).forEach(function(time) {
+      times.slice(0, MAX_TIMES_FOR_DIRECTION).forEach(function(time) {
         appendToMessage('prediction_seconds', parseInt(time.seconds));
       });
       enqueueMessage();
     });
   }
+
+  // uncomment to have some predictions pages to test
+  // appendToMessage('prediction_stop_address', 'John Street West at Paul and George Way');
+  // appendToMessage('prediction_route_text', 'Some line coming from some place and going somewhere else');
+  // appendToMessage('prediction_seconds_1', 5);
+  // appendToMessage('prediction_seconds_2', 35);
+  // appendToMessage('prediction_seconds_3', 200);
+  // enqueueMessage();
+  // appendToMessage('prediction_ttc_alert', 'ohai here are some ttc messages ktkxbai');
+  // enqueueMessage();
 
   ttcAlerts.forEach(function(alert) {
     appendToMessage('prediction_ttc_alert', alert.text);
@@ -136,7 +143,7 @@ function values(obj, tagName) {
   });
 }
 
-// Messages to splash layer
+// Messages to the splash layer (in any window)
 
 function displayText(textKey) {
   appendToMessage('splash_with_text', textKey);

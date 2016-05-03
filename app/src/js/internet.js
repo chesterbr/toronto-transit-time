@@ -1,6 +1,3 @@
-// External API calls
-// All returns are JavaScript objects
-
 function getRoutes(lat, lon, callback, errorCallback) {
   var url = 'http://totransit.chester.me/menu' +
               '?lat=' + lat +
@@ -13,7 +10,7 @@ function getRoutes(lat, lon, callback, errorCallback) {
 
 function getPredictions(url, callback, errorCallback) {
   xhrRequest(url, 'GET', function(xml_predictions) {
-    predictions = ttcXmlToJson(xml_predictions).body.predictions;
+    predictions = ttcXmlToObject(xml_predictions).body.predictions;
     callback(predictions);
   }, errorCallback);
 };
@@ -41,7 +38,7 @@ function xhrRequest(url, type, callback, errorCallback) {
 
 // This parser will only work with the TTC XML (all values are strings, no comments,
 // no tags inside strings, no malicious code, etc.). DON'T use with generic XML.
-function ttcXmlToJson(xml) {
+function ttcXmlToObject(xml) {
   // Remove <?xml.. ?> header and expand self-closing tags (<tag/> » <tag></>)
   xml = xml.replace(/<\?.*\?>/g,'').replace(/\/>/g, '></>');
 
