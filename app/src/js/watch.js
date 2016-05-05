@@ -156,7 +156,7 @@ function appendToMessage(type, value) {
   } else if (type == 'menu_item_subtitle' || type == 'prediction_seconds') {
     key += '_' + keySuffix++;
   }
-  message[key] = value;
+  message[key] = cleanup(value);
 
   if (keySuffix > MAX_ITEMS_PER_MESSAGE) {
     enqueueMessage();
@@ -180,4 +180,8 @@ function dispatchMessages() {
       console.log('Error sending message to Pebble!' + JSON.stringify(e));
     });
   }
+}
+
+function cleanup(value) {
+  return typeof value == "string" ? value.replace("&apos;","'") : value;
 }
