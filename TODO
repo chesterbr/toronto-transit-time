@@ -10,7 +10,7 @@ TECH DEBT (app):
 TECH DEBT (server):
 
 BUGS:
-- Translate HTML entities on scraper (e.g. &apos;)
+- Splash text is not wrapping correctly on Chalk
 
 IMPROVEMENTS:
 - Options screen
