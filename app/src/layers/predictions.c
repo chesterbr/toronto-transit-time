@@ -2,6 +2,8 @@
 #include "modules/util.h"
 
 const int PREDICTION_TEXT_SIZE = 15;
+const int PREDICTION_BOX_MARGIN = 4;
+const int PREDICTION_BOX_ROUND_CORNER_RADIUS = 12;
 const int CONTENT_INDICATOR_HEIGHT = 8;
 
 static TextLayer *s_main_text_layer;
@@ -50,7 +52,7 @@ void predictions_layer_init(Window *window) {
   text_layer_set_font(s_secondary_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD));
 
   s_first_prediction_text_bounds = GRect(
-    s_bounds.origin.x, s_bounds.size.h * 0.40,
+    s_bounds.origin.x + PREDICTION_BOX_MARGIN / 2, s_bounds.size.h * 0.40,
     s_bounds.size.w / 2 , s_bounds.size.h * 0.20
   );
   s_first_prediction_text_layer = text_layer_create(s_first_prediction_text_bounds);
@@ -58,8 +60,8 @@ void predictions_layer_init(Window *window) {
   text_layer_set_font(s_first_prediction_text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_28_BOLD));
 
   s_other_predictions_text_bounds = GRect(
-    s_bounds.size.w / 2 , s_bounds.size.h * 0.40,
-    s_bounds.size.w / 2 , s_bounds.size.h * 0.20
+    s_bounds.size.w / 2, s_bounds.size.h * 0.40,
+    s_bounds.size.w / 2, s_bounds.size.h * 0.20
   );
   s_other_predictions_text_layer = text_layer_create(s_other_predictions_text_bounds);
   text_layer_set_text_alignment(s_other_predictions_text_layer, GTextAlignmentCenter);
@@ -131,23 +133,26 @@ static void fill_background(Layer *layer, GContext *ctx) {
     graphics_draw_text(ctx, "No predictions", font, s_bounds,
       GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
   } else {
+    graphics_draw_rect(ctx, GRect(
+      s_predictions_layer_bounds.size.w / 2 - PREDICTION_BOX_MARGIN / 2, 0,
+      PREDICTION_BOX_MARGIN, s_predictions_layer_bounds.size.h));
     graphics_draw_round_rect(ctx, GRect(
+      PREDICTION_BOX_MARGIN,
       0,
-      0,
-      s_predictions_layer_bounds.size.w / 2,
-      s_predictions_layer_bounds.size.h), 12);
+      s_predictions_layer_bounds.size.w / 2 - PREDICTION_BOX_MARGIN,
+      s_predictions_layer_bounds.size.h), PREDICTION_BOX_ROUND_CORNER_RADIUS);
     graphics_draw_round_rect(ctx, GRect(
-      s_predictions_layer_bounds.size.w / 2,
+      s_predictions_layer_bounds.size.w / 2 + PREDICTION_BOX_MARGIN,
       0,
-      s_predictions_layer_bounds.size.w / 2,
-      s_predictions_layer_bounds.size.h), 12);
+      s_predictions_layer_bounds.size.w / 2 - 2 * PREDICTION_BOX_MARGIN,
+      s_predictions_layer_bounds.size.h), PREDICTION_BOX_ROUND_CORNER_RADIUS);
   }
 
   graphics_draw_round_rect(ctx, GRect(
+    PREDICTION_BOX_MARGIN,
     0,
-    0,
-    s_predictions_layer_bounds.size.w,
-    s_predictions_layer_bounds.size.h), 12);
+    s_predictions_layer_bounds.size.w - 2 * PREDICTION_BOX_MARGIN,
+    s_predictions_layer_bounds.size.h), PREDICTION_BOX_ROUND_CORNER_RADIUS);
 
 }
 
