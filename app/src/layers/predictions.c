@@ -122,32 +122,33 @@ static void fill_background(Layer *layer, GContext *ctx) {
     return;
   }
 
-  if (s_items[s_current_item].is_prediction && s_items[s_current_item].times_count == 0) {
+  graphics_context_set_stroke_color(ctx, GColorBlack);
+  graphics_context_set_stroke_width(ctx, 6);
+
+  if (s_items[s_current_item].times_count == 0) {
     GFont font = fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD);
     graphics_context_set_text_color(ctx, GColorBlack);
     graphics_draw_text(ctx, "No predictions", font, s_bounds,
       GTextOverflowModeWordWrap, GTextAlignmentCenter, NULL);
-    return;
+  } else {
+    graphics_draw_round_rect(ctx, GRect(
+      0,
+      0,
+      s_predictions_layer_bounds.size.w / 2,
+      s_predictions_layer_bounds.size.h), 12);
+    graphics_draw_round_rect(ctx, GRect(
+      s_predictions_layer_bounds.size.w / 2,
+      0,
+      s_predictions_layer_bounds.size.w / 2,
+      s_predictions_layer_bounds.size.h), 12);
   }
 
-  graphics_context_set_stroke_color(ctx, GColorBlack);
-  graphics_context_set_stroke_width(ctx, 6);
-
-  graphics_draw_round_rect(ctx, GRect(
-    0,
-    0,
-    s_predictions_layer_bounds.size.w / 2,
-    s_predictions_layer_bounds.size.h), 12);
-  graphics_draw_round_rect(ctx, GRect(
-    s_predictions_layer_bounds.size.w / 2,
-    0,
-    s_predictions_layer_bounds.size.w / 2,
-    s_predictions_layer_bounds.size.h), 12);
   graphics_draw_round_rect(ctx, GRect(
     0,
     0,
     s_predictions_layer_bounds.size.w,
     s_predictions_layer_bounds.size.h), 12);
+
 }
 
 void predictions_layer_update(char *stop_address, DisplayableItem *items, int count, bool reset_scroll) {
@@ -182,7 +183,6 @@ void predictions_layer_button_up_handler(ClickRecognizerRef recognizer, void *co
 static void update_current_display_item() {
   DisplayableItem item = s_items[s_current_item];
   text_layer_set_text(s_main_text_layer, item.text);
-  APP_LOG(APP_LOG_LEVEL_ERROR, "item %d %d", item.is_prediction, item.times_count);
   text_layer_set_text(s_secondary_text_layer, NULL);
   text_layer_set_text(s_first_prediction_text_layer, NULL);
   text_layer_set_text(s_other_predictions_text_layer, NULL);
