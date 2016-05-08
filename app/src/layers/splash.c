@@ -17,9 +17,10 @@ static GBitmap *s_splash_streetcar_bitmap;
 
 char *s_splash_message;
 
-static GRect s_splash_bounds; // This will likely move
+static GRect s_splash_bounds;
 
 static void ensure_layer_initialized(void);
+static void ensure_layer_destroyed(void);
 static void move_layer_to_top(void);
 static void fill_background(Layer *layer, GContext *ctx);
 
@@ -28,6 +29,10 @@ void splash_show(char* message) {
   text_layer_set_text(s_splash_message_layer, message);
   layer_set_hidden(s_splash_layer, false);
   move_layer_to_top();
+}
+
+void splash_destroy(void) {
+  ensure_layer_destroyed();
 }
 
 void splash_hide(void) {
@@ -87,6 +92,17 @@ static void ensure_layer_initialized(void) {
 
   layer_add_child(s_splash_layer, text_layer_get_layer(s_splash_message_layer));
   layer_add_child(s_splash_layer, bitmap_layer_get_layer(s_splash_streetcar_layer));
+}
+
+static void ensure_layer_destroyed(void) {
+  if (!s_splash_layer) { return; }
+
+  layer_remove_from_parent(s_splash_layer);
+  layer_set_update_proc(s_splash_layer, NULL);
+  bitmap_layer_destroy(s_splash_streetcar_layer);
+  gbitmap_destroy(s_splash_streetcar_bitmap);
+  text_layer_destroy(s_splash_message_layer);
+  layer_destroy(s_splash_layer);
 }
 
 static void move_layer_to_top(void) {

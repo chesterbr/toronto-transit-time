@@ -23,6 +23,7 @@ static void app_init(void) {
 }
 
 static void app_deinit(void) {
+  splash_destroy();
   routes_window_deinit();
 }
 
