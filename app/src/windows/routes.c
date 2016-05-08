@@ -6,6 +6,8 @@
 #include "../modules/bluetooth.h"
 #include <pebble.h>
 
+static void routes_window_load(Window *window);
+static void routes_window_unload(Window *window);
 static void initialize_sections_array(int section_count);
 static void initialize_session_struct_and_items_array(int items_count);
 static void save_current_section_title(char * title);
@@ -56,13 +58,18 @@ static MenuItem *s_menu_current_section_items;
 
 void routes_window_init(void) {
   s_routes_list_window = window_create();
+  window_set_window_handlers(s_routes_list_window, (WindowHandlers) {
+    .load = routes_window_load,
+    .unload = routes_window_unload
+  });
   window_stack_push(s_routes_list_window, true);
 }
 
-void routes_window_deinit(void) {
-  // TODO: where to do this? should we bother?
-  // maybe, check: https://forums.getpebble.com/discussion/10216/understanding-heap-usage-and-still-allocated-bytes
-  // menu_layer_destroy(s_menu_layer);
+static void routes_window_load(Window *window) {
+  // TODO remove this if we end up not using
+}
+
+static void routes_window_unload(Window *window) {
   free_sections_and_items_arrays();
   string_buffer_deinit();
   window_destroy(s_routes_list_window);
