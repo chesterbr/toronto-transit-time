@@ -18,8 +18,11 @@ void bluetooth_initialize(AppMessageInboxReceived received_callback) {
   app_message_register_inbox_dropped(inbox_dropped_callback);
   app_message_register_outbox_failed(outbox_failed_callback);
 
-  const int inbox_size = 1024;
-  const int outbox_size = 1024;
+  // We use 1000 bytes mostly because this value counts in "Still allocated"
+  // on the log (see http://bit.ly/24ElW41) and a round decimal number helps
+  // humans in monitoring that number for potential leaks.
+  const int inbox_size = 900;
+  const int outbox_size = 100;
   app_message_open(inbox_size, outbox_size);
 }
 
