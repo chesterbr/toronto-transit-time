@@ -1,5 +1,4 @@
 #include "routes.h"
-#include "predictions.h"
 #include "../layers/splash.h"
 #include "../layers/routes.h"
 #include "../modules/string_buffer.h"
@@ -45,6 +44,7 @@ enum {
 };
 
 static Window *s_routes_list_window;
+static RouteSelectedCallback s_route_selected_callback;
 
 // Dynamically allocated menu data structures
 static int s_menu_sections_count;
@@ -56,13 +56,14 @@ static int s_menu_current_item_index;
 static char* s_menu_current_item_title;
 static MenuItem *s_menu_current_section_items;
 
-void routes_window_init(void) {
+void routes_window_init(RouteSelectedCallback route_selected_callback) {
   s_routes_list_window = window_create();
   window_set_window_handlers(s_routes_list_window, (WindowHandlers) {
     .load = routes_window_load,
     .unload = routes_window_unload
   });
   window_stack_push(s_routes_list_window, true);
+  s_route_selected_callback = route_selected_callback;
 }
 
 static void routes_window_load(Window *window) {
@@ -166,8 +167,7 @@ static void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, v
   if (cell_index->section == s_menu_sections_count - 1) {
     return;
   }
-  predictions_window_make_visible(PRED_MODE_LOADING);
-  bluetooth_request_predictions(cell_index->section, cell_index->row);
+  (*s_route_selected_callback)(cell_index->section, cell_index->row);
 }
 
 static void free_sections_and_items_arrays(void) {

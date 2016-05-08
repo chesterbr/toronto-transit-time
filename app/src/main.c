@@ -7,6 +7,7 @@
 static void app_init(void);
 static void app_deinit(void);
 void inbox_received_callback(DictionaryIterator *iterator, void *context);
+void route_selected_callback(int section, int row);
 
 int main(void) {
   app_init();
@@ -18,7 +19,7 @@ int main(void) {
 
 static void app_init(void) {
   bluetooth_initialize(inbox_received_callback);
-  routes_window_init();
+  routes_window_init(route_selected_callback);
   splash_show("TORONTO TRANSIT\nBY @chesterbr");
 }
 
@@ -31,4 +32,10 @@ void inbox_received_callback(DictionaryIterator *iterator, void *context) {
   predictions_window_inbox_received(iterator, context);
   splash_layer_inbox_received(iterator, context);
 }
+
+void route_selected_callback(int section, int row) {
+  predictions_window_make_visible(PRED_MODE_LOADING);
+  bluetooth_request_predictions(section, row);
+}
+
 
