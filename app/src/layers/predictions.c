@@ -26,8 +26,8 @@ static int s_current_item;
 static char *s_first_prediction_text;
 static char *s_other_predictions_text;
 
-static void update_current_display_item();
-static void update_up_and_down_content_indicators();
+static void update_current_display_item(void);
+static void update_up_and_down_content_indicators(void);
 static int format_time(char* var, DisplayableItem item, int index);
 static void fill_background(Layer *layer, GContext *ctx);
 
@@ -119,6 +119,19 @@ void predictions_layer_init(Window *window) {
   s_other_predictions_text = malloc(sizeof(char) * PREDICTION_TEXT_SIZE);
 }
 
+void predictions_layer_destroy(void) {
+  free(s_other_predictions_text);
+  free(s_first_prediction_text);
+  layer_destroy(s_indicator_down_layer);
+  layer_destroy(s_indicator_up_layer);
+  content_indicator_destroy(s_indicator);
+  layer_destroy(s_predictions_layer);
+  text_layer_destroy(s_other_predictions_text_layer);
+  text_layer_destroy(s_first_prediction_text_layer);
+  text_layer_destroy(s_secondary_text_layer);
+  text_layer_destroy(s_main_text_layer);
+}
+
 static void fill_background(Layer *layer, GContext *ctx) {
   if (s_items == NULL || !s_items[s_current_item].is_prediction) {
     return;
@@ -185,7 +198,7 @@ void predictions_layer_button_up_handler(ClickRecognizerRef recognizer, void *co
 
 // Private
 
-static void update_current_display_item() {
+static void update_current_display_item(void) {
   DisplayableItem item = s_items[s_current_item];
   text_layer_set_text(s_main_text_layer, item.text);
   text_layer_set_text(s_secondary_text_layer, NULL);
@@ -204,7 +217,7 @@ static void update_current_display_item() {
   update_up_and_down_content_indicators();
 }
 
-static void update_up_and_down_content_indicators() {
+static void update_up_and_down_content_indicators(void) {
   content_indicator_set_content_available(s_indicator,
     ContentIndicatorDirectionUp, s_current_item > 0);
   content_indicator_set_content_available(s_indicator,

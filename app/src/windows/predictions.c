@@ -28,9 +28,11 @@ static int s_seconds_until_refresh;
 static int s_seconds_until_exit;
 static bool s_reset_scroll;
 
-static void predictions_window_disappear(struct Window *window);
+static void predictions_window_load(struct Window *window);
+static void predictions_window_unload(struct Window *window);
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed);
 static void config_provider(Window *window);
+static void free_predictions_data_structures(void);
 
 void predictions_window_inbox_received(DictionaryIterator *iterator, void *context) {
   for(int key = KEY_PREDICTION_ROUTE_TEXT; key <= KEY_PREDICTION_SHOW; key++) {
@@ -69,9 +71,9 @@ void predictions_window_make_visible(int mode) {
   if (!s_predictions_window) {
     s_predictions_window = window_create();
     window_set_window_handlers(s_predictions_window, (WindowHandlers) {
-      .disappear = predictions_window_disappear,
+      .load = predictions_window_load,
+      .unload = predictions_window_unload,
     });
-    predictions_layer_init(s_predictions_window);
     window_set_click_config_provider(s_predictions_window, (ClickConfigProvider)config_provider);
   }
   if (window_stack_get_top_window() != s_predictions_window) {
@@ -88,35 +90,45 @@ void predictions_window_make_visible(int mode) {
   }
 }
 
-static void config_provider(Window *window) {
-  window_single_click_subscribe(BUTTON_ID_UP, predictions_layer_button_up_handler);
-  window_single_click_subscribe(BUTTON_ID_DOWN, predictions_layer_button_down_handler);
+static void predictions_window_load(struct Window *window) {
+  predictions_layer_init(s_predictions_window);
 }
 
-static void predictions_window_disappear(struct Window *window) {
+static void predictions_window_unload(struct Window *window) {
+  predictions_layer_destroy();
   tick_timer_service_unsubscribe();
-  // TODO this should be on deinit handle (will crash if we get a notification)
-  for(int i = 0; i < s_displayable_items_count; i++) {
-    free(s_displayable_items[i].text);
-  }
-  free(s_stop_address);
+  free_predictions_data_structures();
 }
 
 static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
   if (--s_seconds_until_exit == 0) {
     window_stack_pop(true);
   } else if (--s_seconds_until_refresh > 0) {
-  for(int i = 0; i < s_displayable_items_count; i++) {
-    for(int j = 0; j < s_displayable_items[i].times_count; j++) {
-      s_displayable_items[i].times[j] -= 1;
+    for(int i = 0; i < s_displayable_items_count; i++) {
+      for(int j = 0; j < s_displayable_items[i].times_count; j++) {
+        s_displayable_items[i].times[j] -= 1;
+      }
     }
-  }
     predictions_layer_update(s_stop_address, s_displayable_items, s_displayable_items_count, false);
     layer_mark_dirty(window_get_root_layer(s_predictions_window));
   } else {
     s_displayable_items_count = -1;
     s_reset_scroll = false;
     splash_show("REFRESHING...");
+    free_predictions_data_structures();
+    tick_timer_service_unsubscribe();
     bluetooth_refresh_predictions();
   }
+}
+
+static void config_provider(Window *window) {
+  window_single_click_subscribe(BUTTON_ID_UP, predictions_layer_button_up_handler);
+  window_single_click_subscribe(BUTTON_ID_DOWN, predictions_layer_button_down_handler);
+}
+
+static void free_predictions_data_structures(void) {
+  for(int i = 0; i < s_displayable_items_count; i++) {
+    free(s_displayable_items[i].text);
+  }
+  free(s_stop_address);
 }
