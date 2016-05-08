@@ -36,6 +36,11 @@ void routes_layer_init(Window *window, MenuSection *sections, int sections_count
   layer_add_child(window_layer, status_bar_layer_get_layer(s_status_bar_layer));
 }
 
+void routes_layer_destroy(void) {
+  status_bar_layer_destroy(s_status_bar_layer);
+  menu_layer_destroy(s_menu_layer);
+}
+
 // Menu layer callbacks
 
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {

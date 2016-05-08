@@ -14,3 +14,4 @@ typedef struct {
 } MenuSection;
 
 void routes_layer_init(Window *window, MenuSection *sections, int sections_count, MenuLayerSelectCallback select_callback);
+void routes_layer_destroy(void);
