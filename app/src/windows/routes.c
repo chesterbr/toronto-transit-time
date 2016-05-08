@@ -72,6 +72,7 @@ static void routes_window_load(Window *window) {
 static void routes_window_unload(Window *window) {
   free_sections_and_items_arrays();
   string_buffer_deinit();
+  routes_layer_destroy();
   window_destroy(s_routes_list_window);
 }
 
