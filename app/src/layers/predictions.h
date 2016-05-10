@@ -6,7 +6,7 @@ typedef struct {
   char* text;
   bool is_prediction;
   int times_count;
-  int times[5];
+  int times[3];
 } DisplayableItem;
 
 void predictions_layer_init(Window *window);

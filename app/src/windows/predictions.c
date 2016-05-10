@@ -54,7 +54,7 @@ void predictions_window_inbox_received(DictionaryIterator *iterator, void *conte
       case KEY_PREDICTION_SECONDS_1:
       case KEY_PREDICTION_SECONDS_2:
       case KEY_PREDICTION_SECONDS_3:
-        s_displayable_items[s_displayable_items_count].times[tuple->key-KEY_PREDICTION_SECONDS_1] = tuple->value->int32;
+        s_displayable_items[s_displayable_items_count].times[tuple->key - KEY_PREDICTION_SECONDS_1] = tuple->value->int32;
         s_displayable_items[s_displayable_items_count].times_count++;
         break;
       case KEY_PREDICTION_SHOW:
