@@ -112,11 +112,11 @@ static void update_prediction_times(tm *tick_time, TimeUnits units_changed) {
     predictions_layer_update(s_stop_address, s_displayable_items, s_displayable_items_count, false);
     layer_mark_dirty(window_get_root_layer(s_predictions_window));
   } else {
+    tick_timer_service_unsubscribe();
+    free_predictions_data_structures();
     s_displayable_items_count = -1;
     s_reset_scroll = false;
     splash_show("REFRESHING...");
-    free_predictions_data_structures();
-    tick_timer_service_unsubscribe();
     bluetooth_refresh_predictions();
   }
 }

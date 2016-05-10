@@ -5,7 +5,6 @@ TODO
 FEATURES:
 
 TECH DEBT (app):
-- Figure out why the 15s refresh slightly increases the memory allocation
 
 TECH DEBT (server):
 
