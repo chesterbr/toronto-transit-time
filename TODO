@@ -5,7 +5,7 @@ TODO
 FEATURES:
 
 TECH DEBT (app):
-- Set proper load/unload handlers in windows (see https://developer.pebble.com/guides/best-practices/modular-app-architecture/); check a todo for freeing a layer (and general freeing of memory on link in such todo)
+- Figure out why the 15s refresh slightly increases the memory allocation
 
 TECH DEBT (server):
 
