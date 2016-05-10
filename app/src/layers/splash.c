@@ -29,6 +29,7 @@ void splash_show(char* message) {
   text_layer_set_text(s_splash_message_layer, message);
   layer_set_hidden(s_splash_layer, false);
   move_layer_to_top();
+  text_layer_enable_screen_text_flow_and_paging(s_splash_message_layer, 2);
 }
 
 void splash_destroy(void) {
