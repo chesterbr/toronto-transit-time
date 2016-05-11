@@ -10,11 +10,11 @@ It supports all Pebble models - including [Pebble Time Round](https://www.pebble
 
 ### Download
 
-[Click here](pebble://appstore/57315941c351ffcdf500000f) if you are on your mobile phone to install the watchapp.
+[Click here](https://apps.getpebble.com/en_US/application/57315941c351ffcdf500000f) if you are on your mobile phone to install the watchapp (or just to get more info).
 
-If that doesn't work, try the [public link](https://apps.getpebble.com/en_US/application/57315941c351ffcdf500000f), or search for "Toronto Transit App" on the Pebble Time app.
+Alternatively, you can search for "Toronto Transit App" on the Pebble Time app.
 
-In any case, there is no need to install any companion app, or preload/configure anything - just install and run.
+In any case, there is no need to install any companion app, or preload/configure anything. Just install and run.
 
 
 ### Structure
