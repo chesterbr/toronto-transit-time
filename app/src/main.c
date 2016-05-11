@@ -20,7 +20,7 @@ int main(void) {
 static void app_init(void) {
   bluetooth_initialize(inbox_received_callback);
   routes_window_init(route_selected_callback);
-  splash_show("TORONTO TRANSIT\nBY @chesterbr");
+  splash_show("TORONTO TRANSIT TIME\nBY @chesterbr");
 }
 
 static void app_deinit(void) {

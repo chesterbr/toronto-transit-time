@@ -77,7 +77,7 @@ static void ensure_layer_initialized(void) {
   layer_set_update_proc(s_splash_layer, fill_background);
 
   s_splash_message_layer = text_layer_create(
-    GRect(s_splash_bounds.origin.x, s_splash_bounds.size.h * 0.75,
+    GRect(s_splash_bounds.origin.x, s_splash_bounds.size.h * 0.70,
           s_splash_bounds.size.w, s_splash_bounds.size.h)
   );
   text_layer_set_text_alignment(s_splash_message_layer, GTextAlignmentCenter);

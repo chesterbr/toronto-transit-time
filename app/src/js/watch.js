@@ -1,5 +1,5 @@
 var MAX_TIMES_FOR_DIRECTION = 3;
-var ABOUT_SECTION_TITLE = 'Toronto Transit';
+var ABOUT_SECTION_TITLE = 'Toronto Transit Time';
 var ABOUT_ITEM_TITLE = 'by @chesterbr';
 var ABOUT_ITEM_SUBTITLE = 'http://chester.me';
 

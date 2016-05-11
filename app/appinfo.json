@@ -1,8 +1,8 @@
 {
   "uuid": "9da6e6ff-182e-4a1f-ade5-914b53aec7aa",
   "shortName": "TO Transit",
-  "longName": "Toronto Transit",
-  "companyName": "Chester (@chesterbr)",
+  "longName": "Toronto Transit Time",
+  "companyName": "Carlos Nascimento (@chesterbr)",
   "versionLabel": "1.0",
   "sdkVersion": "3",
   "targetPlatforms": ["aplite", "basalt", "chalk"],
