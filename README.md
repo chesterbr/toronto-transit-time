@@ -4,7 +4,7 @@ A [Pebble](https://www.pebble.com/) application that shows bus/streetcar arrival
 
 ![aplite](screenshots/aplite_title.png) &nbsp; ![routes](screenshots/aplite1.png) &nbsp; ![predictions](screenshots/aplite2.png)
 
-It supports all pebble models - including [Pebble Time Round](https://www.pebble.com/pebble-time-round-smartwatch-features):
+It supports all Pebble models - including [pic Time Round](https://www.pebble.com/pebble-time-round-smartwatch-features):
 
 ![routes](screenshots/chalk1.png) &nbsp; ![predictions](screenshots/chalk2.png)
 
