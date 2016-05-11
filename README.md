@@ -10,7 +10,12 @@ It supports all Pebble models - including [Pebble Time Round](https://www.pebble
 
 ### Download
 
-Just search for "Toronto Transit App" on the [Pebble App](https://www.pebble.com/apps) for your phone. There is no need to install any companion app.
+[Click here](pebble://appstore/57315941c351ffcdf500000f) if you are on your mobile phone to install the watchapp.
+
+If that doesn't work, try the [public link](https://apps.getpebble.com/en_US/application/57315941c351ffcdf500000f), or search for "Toronto Transit App" on the Pebble Time app.
+
+In any case, there is no need to install any companion app, or preload/configure anything - just install and run.
+
 
 ### Structure
 
@@ -23,14 +28,15 @@ The `/server` directory contains a Rails app that:
 - Pre-fetches the stops from the TTC system.
 - Exposes an endpoint that receives a pair of coordinates and returns the closest stops and the routes served by each of those stops.
 
-Once we get the routes/stops list, the watch/phone 
+That back-end is used only to get the routes/stops list. Predictions and service messages are gathered directly from the TTC back-end.
 
 
-### Thanks
+### Thank you...
 
-- To [@bani](https://github.com/bani) for help with images, app name and Pebble development resources (not to mention having a physical Pebble Time Round, which forced me to support it 😭).
-- To [@cabello](https://github.com/cabello) for the JavaScript tips and contributions.
-- To the TTC, for offering a service I am pleased to use, and for making the data APIs that made this application possible.
+- [@bani](https://github.com/bani) for help with images, app name and Pebble development resources (not to mention having a physical Pebble Time Round, which forced me to support it 😭).
+- [@cabello](https://github.com/cabello) for the JavaScript tips and contributions.
+- People on the [pebbledev Slack](http://slack.pbldev.io/) for general guidance on my first Pebble app.
+- [Toronto Transit Comission (TTC)](https://www.ttc.ca/), for offering a service I am pleased to use, and for publishing the APIs that made this application possible.
 
 ### License
 
