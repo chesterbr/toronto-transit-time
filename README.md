@@ -28,7 +28,7 @@ Once we get the routes/stops list, the watch/phone
 
 ### Thanks
 
-- To [@bani](https://github.com/bani) for help with images and Pebble development resources (and for testing on the Pebble Time Round).
+- To [@bani](https://github.com/bani) for help with images, app name and Pebble development resources (not to mention having a physical Pebble Time Round, which forced me to support it 😭).
 - To [@cabello](https://github.com/cabello) for the JavaScript tips and contributions.
 - To the TTC, for offering a service I am pleased to use, and for making the data APIs that made this application possible.
 
