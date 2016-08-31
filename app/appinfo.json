@@ -14,7 +14,7 @@
     "media": [
       {
         "menuIcon": true,
-        "type": "png",
+        "type": "bitmap",
         "name": "IMAGE_MENU_ICON",
         "file": "img/streetcar2525.png"
       },
