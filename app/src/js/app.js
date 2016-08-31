@@ -1,6 +1,6 @@
-Internet = require('internet'); // Communication with back-ends
-Watch    = require('watch');    // Communication with watch
-Geo      = require('geo');      // Geolocation
+Internet = require('./internet'); // Communication with back-ends
+Watch    = require('./watch');    // Communication with watch
+Geo      = require('./geo');      // Geolocation
 
 // Main events
 
