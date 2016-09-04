@@ -17,10 +17,10 @@
         "type": "bitmap",
         "name": "IMAGE_MENU_ICON",
         "memoryFormat": "1Bit",
-        "file": "img/streetcar2828.png"
+        "file": "img/streetcar2525.png"
       },
       {
-        "type": "bitmap",
+        "type": "png",
         "name": "IMAGE_STREETCAR",
         "file": "img/streetcar.png"
       }

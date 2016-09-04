@@ -89,6 +89,7 @@ static void ensure_layer_initialized(void) {
   image_frame.origin.x -= image_size.w / 2;
   image_frame.origin.y = s_splash_bounds.size.h * 0.1;
   s_splash_streetcar_layer = bitmap_layer_create(image_frame);
+  bitmap_layer_set_compositing_mode(s_splash_streetcar_layer, GCompOpSet);
   bitmap_layer_set_bitmap(s_splash_streetcar_layer, s_splash_streetcar_bitmap);
 
   layer_add_child(s_splash_layer, text_layer_get_layer(s_splash_message_layer));
