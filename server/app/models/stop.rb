@@ -11,6 +11,7 @@ class Stop < ApplicationRecord
 
   scope :with_routes_and_directions_grouped_by_address, -> {
     joins(directions: :route)
+      .merge(Route.for_current_time)
       .select('stops.title      stop,     ' \
               'routes.title     route,    ' \
               'directions.title direction,' \
