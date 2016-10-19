@@ -3,9 +3,9 @@
   "shortName": "TO Transit",
   "longName": "Toronto Transit Time",
   "companyName": "Carlos Nascimento (@chesterbr)",
-  "versionLabel": "1.0",
+  "versionLabel": "1.1",
   "sdkVersion": "3",
-  "targetPlatforms": ["aplite", "basalt", "chalk"],
+  "targetPlatforms": ["aplite", "basalt", "chalk", "diorite", "emery"],
   "enableMultiJS": true,
   "watchapp": {
     "watchface": false
