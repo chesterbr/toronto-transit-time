@@ -1,9 +1,11 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+nighttime:
+  tag: 315
+  title: nighttime route
 
-one:
-  tag: 
-  title: MyString
+daytime:
+  tag: 666
+  title: daytime route
 
-two:
-  tag: 
-  title: MyString
+daytime_with_two_digits:
+  tag: 33
+  title: another daytime route
