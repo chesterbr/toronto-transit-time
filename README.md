@@ -16,6 +16,9 @@ Alternatively, you can search for "Toronto Transit App" on the Pebble Time app.
 
 In any case, there is no need to install any companion app, or preload/configure anything. Just install and run.
 
+### Rationale and Development Process
+
+This [blog post](https://chester.me/archives/2016/12/building-a-pebble-app-with-c-javascript-and-rails-toronto-transit-time/) is a deep dive on how the initial idea ended in this app, and on why things were done in this particular way.
 
 ### Structure
 
