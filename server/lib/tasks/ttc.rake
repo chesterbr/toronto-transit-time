@@ -1,3 +1,5 @@
+require 'net/http'
+
 namespace :ttc do
   ROUTE_LIST_URI = 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=ttc'
   ROUTE_INFO_URI = 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=%{tag}&terse'
