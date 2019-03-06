@@ -22,16 +22,18 @@ This [blog post](https://chester.me/archives/2016/12/building-a-pebble-app-with-
 
 ### Structure
 
-The `/app` directory contains:
+The [/app](app/) directory contains:
 
 - The C code of the main application that runs on Pebble (with separate files for the routes and predictions windows and layers, plus a splash screen layer that is shared among them).
 - The JavaScript code that runs on the phone and provides location and internet API request/parsing services to the C app.
 
-The `/server` directory contains a Rails app that:
+The [/server](server/) directory contains a Rails app that:
 - Pre-fetches the stops from the TTC system.
 - Exposes an endpoint that receives a pair of coordinates and returns the closest stops and the routes served by each of those stops.
 
-That back-end is used only to get the routes/stops list. Predictions and service messages are gathered directly from the TTC back-end.
+That back-end is used only to get the routes/stops list. Check [its README](server/README.md) for setup informaiton.
+
+Predictions and service messages are gathered directly from the TTC back-end by the watch (from the C app, via the JavaScript app).
 
 ### Credits / Acknowledgements
 
@@ -47,4 +49,3 @@ That back-end is used only to get the routes/stops list. Predictions and service
 ### Legal
 
 The stop locations and predictions come from the [TTC Real-Time Next Arrival](http://www1.toronto.ca/wps/portal/contentonly?vgnextoid=4427790e6f21d210VgnVCM1000003dd60f89RCRD) service. The app or its authors do not have or claim to have any affiliation with the [Toronto Transit Commission (TTC)](https://www.ttc.ca/).
-
