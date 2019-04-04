@@ -13,3 +13,7 @@ Currently, you bootstrap as a traditional Rails app:
 - Run the server (`rails server`);
 - Call the `/menu` endpoint to retrieve stops (e.g., [ stops near Union Station](http://localhost:3000/menu?lat=43.6452&lon=-79.3808`));
 - Run tests (`bin/rake test`).
+
+### Docker
+
+- This is undergoing migration to Docker (so I can keep this service on with minimal cost/hassle). I'm learning this, so any input on things I'm doing wrong is welcome.
