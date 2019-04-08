@@ -13,5 +13,5 @@ variables:
   imageName: 'toronto-transit-time:$(build.buildId)'
 
 steps:
-- script: docker build -t $(imageName) .
+- script: docker build -t $(dockerId)/$(imageName) .  # add options to this command to meet your needs
   displayName: 'docker build'
