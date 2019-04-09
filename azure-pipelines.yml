@@ -10,8 +10,11 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 variables:
-  dockerId: chesterregistry
-  imageName: 'toronto-transit-time:$(build.buildId)'
+- group: secrets
+- name: dockerId
+  value: chesterregistry
+- name: imageName
+  value: 'toronto-transit-time:$(build.buildId)'
 
 steps:
 - script: |
