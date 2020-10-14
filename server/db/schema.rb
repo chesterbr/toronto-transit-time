@@ -10,11 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160319162500) do
+ActiveRecord::Schema.define(version: 2016_03_19_162500) do
 
   create_table "directions", force: :cascade do |t|
-    t.string  "tag"
-    t.string  "title"
+    t.string "tag"
+    t.string "title"
     t.integer "route_id"
     t.index ["route_id"], name: "index_directions_on_route_id"
     t.index ["tag"], name: "index_directions_on_tag"
@@ -36,8 +36,8 @@ ActiveRecord::Schema.define(version: 20160319162500) do
   create_table "stops", force: :cascade do |t|
     t.string "tag"
     t.string "title"
-    t.float  "lat"
-    t.float  "lon"
+    t.float "lat"
+    t.float "lon"
     t.index ["tag"], name: "index_stops_on_tag"
   end
 
