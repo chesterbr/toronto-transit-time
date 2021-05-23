@@ -8,7 +8,7 @@ Currently, you bootstrap as a traditional Rails app:
 
 - Install the ruby version pointed by [`.ruby-version`](.ruby-version]) (e.g., `rbenv install`);
 - Install bundler & dependencies (`gem install bundler && bundle install`);
-- Run migrations for the local SQLite database (`rails migrate`);
+- Run migrations for the local SQLite database (`rails db:schema:load`);
 - Import some stops from the TTC server (`bin/rake ttc:crawl`);
 - Run the server (`rails server`);
 - Call the `/menu` endpoint to retrieve stops (e.g., [ stops near Union Station](http://localhost:3000/menu?lat=43.6452&lon=-79.3808`));

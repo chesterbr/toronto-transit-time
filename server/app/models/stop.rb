@@ -3,7 +3,7 @@ class Stop < ApplicationRecord
 
   scope :within_fence_ordered_by_distance, ->(lat, lon, distance) {
     lat_range, lon_range = Geo.square(lat, lon, distance)
-    order_expr = Geo.distance_criteria(lat,lon)
+    order_expr = Arel.sql(Geo.distance_criteria(lat,lon))
 
     where(lat: lat_range, lon: lon_range)
       .order(order_expr)
