@@ -1,8 +1,8 @@
 require 'net/http'
 
 namespace :ttc do
-  ROUTE_LIST_URI = 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeList&a=ttc'
-  ROUTE_INFO_URI = 'http://webservices.nextbus.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=%{tag}&terse'
+  ROUTE_LIST_URI = 'https://retro.umoiq.com/service/publicXMLFeed?command=routeList&a=ttc'
+  ROUTE_INFO_URI = 'https://retro.umoiq.com/service/publicXMLFeed?command=routeConfig&a=ttc&r=%{tag}&terse'
 
   desc 'Crawls the TTC site from official API (http://goo.gl/rb2151)'
   task crawl: :environment do
@@ -113,7 +113,7 @@ namespace :ttc do
     req = Net::HTTP::Get.new(url.to_s)
     retries = [3, 30, 120]
     begin
-      res = Net::HTTP.start(url.host, url.port) { |http| http.request(req) }
+      res = Net::HTTP.start(url.host, url.port, use_ssl: true) { |http| http.request(req) }
       raise "Unexpected HTTP status: #{res.code} #{res.msg}" if res.code.to_i >= 300
       raise "Error response:\n#{res.body}" if res.body.include?("</Error>")
     rescue StandardError => e

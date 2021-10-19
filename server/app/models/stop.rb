@@ -61,7 +61,7 @@ class Stop < ApplicationRecord
         command: :predictions,
         a: :ttc
       })
-      "http://webservices.nextbus.com/service/publicXMLFeed?#{params.to_query}"
+      "https://retro.umoiq.com/service/publicXMLFeed?#{params.to_query}"
     end
   end
 end
