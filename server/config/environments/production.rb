@@ -54,6 +54,9 @@ Rails.application.configure do
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "to_transit_server_#{Rails.env}"
 
+  # Don't care if the mailer can't send (this app does not send mail).
+  config.action_mailer.raise_delivery_errors = false
+
   config.action_mailer.perform_caching = false
 
   # Ignore bad email addresses and do not raise email delivery errors.
