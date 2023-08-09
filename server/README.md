@@ -6,8 +6,8 @@ This app gathers the TTC stops from the TTC API for [Toronto Transit Time](https
 
 Currently, you bootstrap as a traditional Rails app:
 
-- Install the ruby version pointed by [`.ruby-version`](.ruby-version]) (e.g., `rbenv install`);
-- Install bundler & dependencies (`gem install bundler && bundle install`);
+- Install the ruby version pointed by [`.ruby-version`](.ruby-version]) (e.g., `rbenv install` or `rvm install $(cat .ruby-version));
+- Install dependencies (`bundle`);
 - Run migrations for the local SQLite database (`rails db:schema:load`);
 - Import some stops from the TTC server (`bin/rake ttc:crawl`);
 - Run the server (`rails server`);
