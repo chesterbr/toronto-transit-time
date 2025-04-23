@@ -4,16 +4,17 @@ This app gathers the TTC stops from the TTC API for [Toronto Transit Time](https
 
 ### Setup
 
-Currently, you bootstrap as a traditional Rails app:
+If you have [rbenv with ruby-build](https://github.com/rbenv/ruby-build) and `wget` (such as in GitHub Codespaces), just :
 
-- Install the ruby version pointed by [`.ruby-version`](.ruby-version]) (e.g., `rbenv install` or `rvm install $(cat .ruby-version));
-- Install dependencies (`bundle`);
-- Run migrations for the local SQLite database (`rails db:schema:load`);
-- Import some stops from the TTC server (`bin/rake ttc:crawl`);
-- Run the server (`rails server`);
-- Call the `/menu` endpoint to retrieve stops (e.g., [ stops near Union Station](http://localhost:3000/menu?lat=43.6452&lon=-79.3808));
-- Run tests (`bin/rake test`).
+```bash
+rbenv install && bundle && rails db:schema:load && bin/rake ttc:crawl
+```
 
-### Docker
+in order to set up the app, its database and import the TTC stops. Then you can run the server (`rails server`) and:
+  - Call the `/menu` endpoint to retrieve stops near a specific place with the info needed to display in the list and query for next arrivals (e.g., [ stops near Union Station](http://localhost:3000/menu?lat=43.6452&lon=-79.3808));
+  - Run tests (`bin/rake test`).
 
-- This is undergoing migration to Docker (so I can keep this service on with minimal cost/hassle). I'm learning this, so any input on things I'm doing wrong is welcome.
+### TODO
+
+- Add the initialization above to VSCode configuration
+- Introduce a Dockerfile
