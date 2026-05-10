@@ -1,20 +1,30 @@
 # Toronto Transit Time
 
-A [Pebble](https://www.pebble.com/) application that shows bus/streetcar arrival time predictions for nearby stops in Toronto.
+A [Pebble](https://repebble.com/) application that shows bus/streetcar arrival time predictions for nearby stops in Toronto. Originally built in 2016, it builds and runs on the modern [rePebble](https://repebble.com/) SDK.
 
 ![aplite](screenshots/aplite_title.png) &nbsp; ![routes](screenshots/aplite1.png) &nbsp; ![predictions](screenshots/aplite2.png)
 
-It supports all Pebble models - including [Pebble Time Round](https://www.pebble.com/pebble-time-round-smartwatch-features):
+It supports all Pebble models, including Pebble Time Round:
 
 ![routes](screenshots/chalk1.png) &nbsp; ![predictions](screenshots/chalk2.png)
 
-### Download
+### Building
 
-[Click here](https://apps.getpebble.com/en_US/application/57315941c351ffcdf500000f) if you are on your mobile phone to install the watchapp (or just to get more info).
+You'll need the [rePebble SDK](https://developer.repebble.com/sdk):
 
-Alternatively, you can search for "Toronto Transit App" on the Pebble Time app.
+```bash
+brew install node && brew install uv
+uv tool install pebble-tool --python 3.13
+pebble sdk install latest
+```
 
-In any case, there is no need to install any companion app, or preload/configure anything. Just install and run.
+Then build and run in the emulator:
+
+```bash
+cd app
+pebble build
+pebble install --emulator basalt
+```
 
 ### Rationale and Development Process
 
@@ -43,9 +53,9 @@ Predictions and service messages are gathered directly from the TTC back-end by 
 ### Also thank you...
 
 - [@bani](https://github.com/bani) for help with images, app name and Pebble development resources (not to mention having a physical Pebble Time Round, which forced me to support it 😭).
-- People on the [pebbledev Slack](http://slack.pbldev.io/) for general guidance on my first Pebble app.
+- People on the pebbledev Slack for general guidance on my first Pebble app.
 - [Toronto Transit Comission (TTC)](https://www.ttc.ca/), for offering a service I am pleased to use, and for publishing the APIs that made this application possible.
 
 ### Legal
 
-The stop locations and predictions come from the [TTC Real-Time Next Arrival](http://www1.toronto.ca/wps/portal/contentonly?vgnextoid=4427790e6f21d210VgnVCM1000003dd60f89RCRD) service. The app or its authors do not have or claim to have any affiliation with the [Toronto Transit Commission (TTC)](https://www.ttc.ca/).
+The stop locations and predictions come from the TTC Real-Time Next Arrival service. The app or its authors do not have or claim to have any affiliation with the [Toronto Transit Commission (TTC)](https://www.ttc.ca/).
