@@ -14,7 +14,9 @@
       "basalt",
       "chalk",
       "diorite",
-      "emery"
+      "emery",
+      "flint",
+      "gabbro"
     ],
     "enableMultiJS": true,
     "capabilities": [
