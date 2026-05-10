@@ -4,7 +4,7 @@ A [Pebble](https://repebble.com/) application that shows bus/streetcar arrival t
 
 ![aplite](screenshots/aplite_title.png) &nbsp; ![routes](screenshots/aplite1.png) &nbsp; ![predictions](screenshots/aplite2.png)
 
-It supports all Pebble models, including Pebble Time Round:
+It supports all Pebble models — including the new Pebble 2 Duo and Pebble Round/Round 2:
 
 ![routes](screenshots/chalk1.png) &nbsp; ![predictions](screenshots/chalk2.png)
 
