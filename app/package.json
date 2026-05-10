@@ -1,0 +1,85 @@
+{
+  "name": "TO Transit",
+  "author": "Carlos Nascimento (@chesterbr)",
+  "version": "1.1.0",
+  "private": true,
+  "keywords": [
+    "pebble-app"
+  ],
+  "dependencies": {},
+  "pebble": {
+    "sdkVersion": "3",
+    "targetPlatforms": [
+      "aplite",
+      "basalt",
+      "chalk",
+      "diorite",
+      "emery"
+    ],
+    "enableMultiJS": true,
+    "capabilities": [
+      "location"
+    ],
+    "projectType": "native",
+    "displayName": "Toronto Transit Time",
+    "uuid": "9da6e6ff-182e-4a1f-ade5-914b53aec7aa",
+    "watchapp": {
+      "watchface": false,
+      "hiddenApp": false,
+      "onlyShownOnCommunication": false
+    },
+    "resources": {
+      "media": [
+        {
+          "menuIcon": true,
+          "type": "bitmap",
+          "name": "IMAGE_MENU_ICON",
+          "memoryFormat": "1Bit",
+          "file": "img/streetcar2525.png"
+        },
+        {
+          "type": "png",
+          "name": "IMAGE_STREETCAR",
+          "file": "img/streetcar.png"
+        }
+      ]
+    },
+    "messageKeys": {
+      "KEY_MENU_SECTION_COUNT": 100,
+      "KEY_MENU_STRING_BUFFER_SIZE": 101,
+      "KEY_MENU_SECTION_ITEMS_COUNT": 102,
+      "KEY_MENU_SECTION_TITLE": 103,
+      "KEY_MENU_ITEM_TITLE_1": 104,
+      "KEY_MENU_ITEM_SUBTITLE_1": 105,
+      "KEY_MENU_ITEM_TITLE_2": 106,
+      "KEY_MENU_ITEM_SUBTITLE_2": 107,
+      "KEY_MENU_ITEM_TITLE_3": 108,
+      "KEY_MENU_ITEM_SUBTITLE_3": 109,
+      "KEY_MENU_ITEM_TITLE_4": 110,
+      "KEY_MENU_ITEM_SUBTITLE_4": 111,
+      "KEY_MENU_ITEM_TITLE_5": 112,
+      "KEY_MENU_ITEM_SUBTITLE_5": 113,
+      "KEY_MENU_ITEM_TITLE_6": 114,
+      "KEY_MENU_ITEM_SUBTITLE_6": 115,
+      "KEY_MENU_ITEM_TITLE_7": 116,
+      "KEY_MENU_ITEM_SUBTITLE_7": 117,
+      "KEY_MENU_ITEM_TITLE_8": 118,
+      "KEY_MENU_ITEM_SUBTITLE_8": 119,
+      "KEY_MENU_ITEM_TITLE_9": 120,
+      "KEY_MENU_ITEM_SUBTITLE_9": 121,
+      "KEY_MENU_ITEM_TITLE_10": 122,
+      "KEY_MENU_ITEM_SUBTITLE_10": 123,
+      "KEY_MENU_SHOW": 124,
+      "KEY_PREDICTION_ROUTE_TEXT": 200,
+      "KEY_PREDICTION_STOP_ADDRESS": 201,
+      "KEY_PREDICTION_TTC_ALERT": 202,
+      "KEY_PREDICTION_SECONDS_1": 203,
+      "KEY_PREDICTION_SECONDS_2": 204,
+      "KEY_PREDICTION_SECONDS_3": 205,
+      "KEY_PREDICTION_SHOW": 206,
+      "KEY_REQUESTED_PREDICTION_SECTION": 300,
+      "KEY_REQUESTED_PREDICTION_ITEM": 301,
+      "KEY_SPLASH_WITH_TEXT": 400
+    }
+  }
+}
